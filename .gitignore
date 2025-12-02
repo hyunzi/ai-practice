@@ -33,10 +33,11 @@ coverage/
 *.ear
 *.jar
 *.log
-mini-readers/target/
-mini-readers/.m2
-mini-readers/data/*.db
-mini-readers/data/*.sqlite
+# Maven/Java outputs moved under week1-practice
+week1-practice/mini-readers/target/
+week1-practice/mini-readers/.m2
+week1-practice/mini-readers/data/*.db
+week1-practice/mini-readers/data/*.sqlite
 
 # Tooling caches
 .openai/
@@ -45,6 +46,5 @@ mini-readers/data/*.sqlite
 .gradle/
 
 # Misc
-archive/
 data/
 skills/
