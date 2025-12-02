@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>Local AI Agents Console</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background-color: #f5f5f7;
+            color: #222;
+        }
+
+        .app-root {
+            max-width: 1080px;
+            margin: 32px auto;
+            padding: 24px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 4px;
+            font-size: 24px;
+        }
+
+        .subtitle {
+            margin: 0 0 16px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 16px;
+        }
+
+        .tab {
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            border-bottom: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #555;
+        }
+
+        .tab:hover {
+            background-color: #f7f7f9;
+        }
+
+        .tab.active {
+            border-bottom-color: #2563eb;
+            color: #111827;
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section {
+            margin-bottom: 18px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 4px;
+            color: #4b5563;
+        }
+
+        textarea,
+        input,
+        select {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            font-family: inherit;
+            font-size: 13px;
+            resize: vertical;
+        }
+
+        textarea:focus,
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.15);
+        }
+
+        textarea {
+            min-height: 80px;
+        }
+
+        .row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .row > .col {
+            flex: 1;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 4px;
+            margin-bottom: 12px;
+        }
+
+        button {
+            border-radius: 999px;
+            border: none;
+            padding: 6px 14px;
+            font-size: 13px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: #2563eb;
+            color: #ffffff;
+        }
+
+        button.secondary {
+            background-color: #e5e7eb;
+            color: #111827;
+        }
+
+        button:disabled {
+            opacity: 0.65;
+            cursor: default;
+        }
+
+        .output {
+            margin-top: 8px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            max-height: 280px;
+            overflow: auto;
+        }
+
+        .output-title {
+            font-size: 12px;
+            margin-top: 4px;
+            margin-bottom: 4px;
+            color: #6b7280;
+        }
+
+        .hint {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-top: 2px;
+        }
+
+        .error {
+            color: #b91c1c;
+        }
+
+        @media (max-width: 768px) {
+            .app-root {
+                margin: 12px;
+                padding: 16px;
+            }
+
+            .row {
+                flex-direction: column;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app-root">
+    <h1>Local AI Agents</h1>
+    <p class="subtitle">간단한 웹 UI로 Email / DevDoc 에이전트를 바로 호출해 보세요.</p>
+
+    <div class="tabs">
+        <div class="tab active" data-tab="email">
+            <span>💌</span><span>Email Agent</span>
+        </div>
+        <div class="tab" data-tab="devdoc">
+            <span>📖</span><span>DevDoc Agent</span>
+        </div>
+    </div>
+
+    <!-- Email Agent Tab -->
+    <div class="tab-content active" id="tab-email">
+        <div class="section">
+            <div class="section-title">1. 한글 메일 초안</div>
+            <label for="email-korean-draft">한글 초안</label>
+            <textarea id="email-korean-draft" placeholder="예) 어제 회의 내용 관련해서 후속 조치 메일을 보내고 싶어..."></textarea>
+            <div class="hint">한글로 자유롭게 초안을 적어 주세요.</div>
+        </div>
+
+        <div class="section row">
+            <div class="col">
+                <label for="email-tone">tone (어조)</label>
+                <select id="email-tone">
+                    <option value="soft">soft (부드럽게)</option>
+                    <option value="formal">formal (격식 있게)</option>
+                    <option value="direct">direct (직설적으로)</option>
+                </select>
+            </div>
+            <div class="col">
+                <label for="email-mail-type">mailType (메일 유형)</label>
+                <select id="email-mail-type">
+                    <option value="AUTO">AUTO (자동 감지)</option>
+                    <option value="NEW">NEW (새 메일)</option>
+                    <option value="REPLY">REPLY (답장)</option>
+                    <option value="APOLOGY">APOLOGY (사과)</option>
+                    <option value="REMINDER">REMINDER (리마인드)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="section">
+            <label for="email-additional-context">추가 배경 / 요청 사항</label>
+            <textarea id="email-additional-context" placeholder="수신자 정보, 회사/프로젝트 맥락, 꼭 들어갔으면 하는 문장 등을 적어 주세요."></textarea>
+        </div>
+
+        <div class="section">
+            <div class="buttons">
+                <button id="btn-generate-email">
+                    <span>영어 메일 초안 생성</span>
+                </button>
+            </div>
+            <div class="output-title">생성된 영어 메일 / 메타 정보</div>
+            <div id="email-draft-output" class="output"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">2. 체크리스트</div>
+            <label for="email-english-mail">체크할 영어 메일 내용</label>
+            <textarea id="email-english-mail" placeholder="위에서 생성된 메일이 자동으로 들어옵니다. 직접 수정하거나 붙여넣어도 됩니다."></textarea>
+
+            <div class="buttons">
+                <button id="btn-email-checklist" class="secondary">
+                    <span>체크리스트 확인</span>
+                </button>
+            </div>
+
+            <div class="output-title">체크리스트 결과</div>
+            <div id="email-checklist-output" class="output"></div>
+        </div>
+    </div>
+
+    <!-- DevDoc Agent Tab -->
+    <div class="tab-content" id="tab-devdoc">
+        <div class="section">
+            <div class="section-title">1. Q&amp;A</div>
+            <label for="devdoc-question">질문 (question)</label>
+            <textarea id="devdoc-question" placeholder="예) Spring Boot에서 정적 리소스 매핑이 어떻게 동작하는지 설명해줘."></textarea>
+
+            <div class="row">
+                <div class="col">
+                    <label for="devdoc-persona">persona</label>
+                    <input id="devdoc-persona" type="text" placeholder="예) 초보 백엔드 개발자, Tech Lead 등" />
+                </div>
+                <div class="col">
+                    <label for="devdoc-topic-hint">topicHint</label>
+                    <input id="devdoc-topic-hint" type="text" placeholder="예) Spring Boot static resource, LangChain4j" />
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button id="btn-devdoc-qa">
+                    <span>Q&amp;A 실행</span>
+                </button>
+            </div>
+
+            <div class="output-title">Q&amp;A 결과 (요약 / 상세 / 참조 스니펫)</div>
+            <div id="devdoc-qa-output" class="output"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">2. 학습 노트</div>
+            <div class="row">
+                <div class="col">
+                    <label for="devdoc-topic">topic</label>
+                    <input id="devdoc-topic" type="text" placeholder="예) LangChain4j로 RAG 구성하기" />
+                </div>
+                <div class="col">
+                    <label for="devdoc-note-persona">persona</label>
+                    <input id="devdoc-note-persona" type="text" placeholder="예) 주니어 서버 개발자" />
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button id="btn-devdoc-note" class="secondary">
+                    <span>학습 노트 생성</span>
+                </button>
+            </div>
+
+            <div class="output-title">생성된 학습 노트 (Markdown)</div>
+            <div id="devdoc-note-output" class="output"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 탭 전환
+    (function setupTabs() {
+        const tabs = document.querySelectorAll(".tab");
+        const contents = {
+            email: document.getElementById("tab-email"),
+            devdoc: document.getElementById("tab-devdoc")
+        };
+
+        tabs.forEach(tab => {
+            tab.addEventListener("click", () => {
+                const key = tab.getAttribute("data-tab");
+                if (!key) return;
+
+                tabs.forEach(t => t.classList.remove("active"));
+                tab.classList.add("active");
+
+                Object.values(contents).forEach(c => c.classList.remove("active"));
+                const content = contents[key];
+                if (content) content.classList.add("active");
+            });
+        });
+    })();
+
+    function setLoading(button, isLoading) {
+        if (!button) return;
+        if (isLoading) {
+            button.dataset.originalText = button.textContent;
+            button.textContent = "처리 중...";
+            button.disabled = true;
+        } else {
+            if (button.dataset.originalText) {
+                button.textContent = button.dataset.originalText;
+            }
+            button.disabled = false;
+        }
+    }
+
+    async function postJson(url, body, outputElement, button) {
+        if (!outputElement) return;
+        setLoading(button, true);
+        outputElement.textContent = "요청 중...";
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(body)
+            });
+
+            const text = await response.text();
+            let parsed;
+
+            try {
+                parsed = JSON.parse(text);
+            } catch (_) {
+                parsed = text;
+            }
+
+            if (!response.ok) {
+                outputElement.innerHTML =
+                    "<span class='error'>요청 실패 (" + response.status + ")</span>\n" +
+                    (typeof parsed === "string" ? parsed : JSON.stringify(parsed, null, 2));
+                return;
+            }
+
+            if (typeof parsed === "string") {
+                outputElement.textContent = parsed;
+            } else {
+                outputElement.textContent = JSON.stringify(parsed, null, 2);
+            }
+        } catch (e) {
+            outputElement.innerHTML = "<span class='error'>에러:</span> " + e;
+        } finally {
+            setLoading(button, false);
+        }
+    }
+
+    // Email Agent: 초안 생성
+    (function setupEmailDraft() {
+        const btn = document.getElementById("btn-generate-email");
+        const koreanDraftEl = document.getElementById("email-korean-draft");
+        const toneEl = document.getElementById("email-tone");
+        const mailTypeEl = document.getElementById("email-mail-type");
+        const contextEl = document.getElementById("email-additional-context");
+        const outputEl = document.getElementById("email-draft-output");
+        const englishMailEl = document.getElementById("email-english-mail");
+
+        if (!btn) return;
+
+        btn.addEventListener("click", async () => {
+            const body = {
+                koreanDraft: koreanDraftEl.value || "",
+                tone: toneEl.value || "soft",
+                mailType: mailTypeEl.value || "AUTO",
+                additionalContext: contextEl.value || ""
+            };
+
+            await postJson("/api/agent/email/draft", body, outputEl, btn);
+
+            // 응답이 JSON일 경우 finalEnglishMail을 영어 메일 입력창에 자동 반영
+            try {
+                const text = outputEl.textContent || "";
+                const parsed = JSON.parse(text);
+                if (parsed && typeof parsed.finalEnglishMail === "string") {
+                    englishMailEl.value = parsed.finalEnglishMail;
+                }
+            } catch (_) {
+                // ignore JSON parse errors
+            }
+        });
+    })();
+
+    // Email Agent: 체크리스트
+    (function setupEmailChecklist() {
+        const btn = document.getElementById("btn-email-checklist");
+        const englishMailEl = document.getElementById("email-english-mail");
+        const outputEl = document.getElementById("email-checklist-output");
+
+        if (!btn) return;
+
+        btn.addEventListener("click", async () => {
+            const body = {
+                englishMail: englishMailEl.value || ""
+            };
+
+            await postJson("/api/agent/email/checklist", body, outputEl, btn);
+        });
+    })();
+
+    // DevDoc Agent: Q&A
+    (function setupDevDocQa() {
+        const btn = document.getElementById("btn-devdoc-qa");
+        const questionEl = document.getElementById("devdoc-question");
+        const personaEl = document.getElementById("devdoc-persona");
+        const topicHintEl = document.getElementById("devdoc-topic-hint");
+        const outputEl = document.getElementById("devdoc-qa-output");
+
+        if (!btn) return;
+
+        btn.addEventListener("click", async () => {
+            const body = {
+                question: questionEl.value || "",
+                persona: personaEl.value || "",
+                topicHint: topicHintEl.value || ""
+            };
+
+            await postJson("/api/agent/devdoc/qa", body, outputEl, btn);
+        });
+    })();
+
+    // DevDoc Agent: 학습 노트
+    (function setupDevDocNote() {
+        const btn = document.getElementById("btn-devdoc-note");
+        const topicEl = document.getElementById("devdoc-topic");
+        const personaEl = document.getElementById("devdoc-note-persona");
+        const outputEl = document.getElementById("devdoc-note-output");
+
+        if (!btn) return;
+
+        btn.addEventListener("click", async () => {
+            const body = {
+                topic: topicEl.value || "",
+                persona: personaEl.value || ""
+            };
+
+            await postJson("/api/agent/devdoc/note", body, outputEl, btn);
+        });
+    })();
+</script>
+</body>
+</html>
+
