@@ -7,10 +7,7 @@
   <groupId>com.example</groupId>
   <artifactId>mini-readers</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  <modules>
-    <module>demo</module>
-  </modules>
+  <packaging>jar</packaging>
 
   <name>mini-readers</name>
   <description>Mini Readers Spring Boot service</description>
