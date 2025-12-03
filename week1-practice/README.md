@@ -1,4 +1,4 @@
-# ai-practice
+# WEEK1 실습
 
 ## 개요
 - **Fruit Calendar**: 1주차 첫 실습은 과일 캘린더이며, `week1-practice/fruit-calendar` 아래에서 관련 설정과 자료를 그대로 확인할 수 있습니다.
