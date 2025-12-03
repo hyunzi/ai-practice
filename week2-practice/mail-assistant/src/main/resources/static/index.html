@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8" />
-    <title>Local AI Agents Console</title>
+    <title>Local AI Mail & DevDoc Console</title>
     <style>
         * {
             box-sizing: border-box;
@@ -12,79 +12,94 @@
             margin: 0;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             background-color: #f5f5f7;
-            color: #222;
+            color: #111827;
         }
 
         .app-root {
-            max-width: 1080px;
+            max-width: 1120px;
             margin: 32px auto;
             padding: 24px;
             background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+            border-radius: 16px;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
         }
 
-        h1 {
-            margin-top: 0;
-            margin-bottom: 4px;
+        .app-header h1 {
+            margin: 0 0 6px;
             font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
         }
 
         .subtitle {
-            margin: 0 0 16px;
+            margin: 0 0 20px;
             font-size: 13px;
-            color: #666;
+            color: #6b7280;
         }
 
-        .tabs {
+        .agent-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+            gap: 18px;
+        }
+
+        .agent-card {
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            padding: 16px 18px 18px;
+            background: #f9fafb;
+        }
+
+        .agent-card:nth-child(1) {
+            background: #fefefe;
+        }
+
+        .agent-header {
             display: flex;
-            border-bottom: 1px solid #e0e0e0;
-            margin-bottom: 16px;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
         }
 
-        .tab {
-            padding: 10px 16px;
-            cursor: pointer;
-            font-size: 14px;
-            border-bottom: 2px solid transparent;
+        .agent-title {
+            font-size: 16px;
+            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 6px;
-            color: #555;
-        }
-
-        .tab:hover {
-            background-color: #f7f7f9;
-        }
-
-        .tab.active {
-            border-bottom-color: #2563eb;
             color: #111827;
-            font-weight: 600;
         }
 
-        .tab-content {
-            display: none;
+        .agent-tag {
+            font-size: 10px;
+            padding: 2px 7px;
+            border-radius: 999px;
+            background: #dbeafe;
+            color: #1d4ed8;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
         }
 
-        .tab-content.active {
-            display: block;
+        .agent-desc {
+            margin: 0;
+            font-size: 12px;
+            color: #6b7280;
         }
 
         .section {
-            margin-bottom: 18px;
+            margin-top: 14px;
         }
 
         .section-title {
-            font-size: 14px;
-            margin-bottom: 8px;
+            font-size: 13px;
+            margin-bottom: 6px;
             font-weight: 600;
             color: #374151;
         }
 
         label {
             display: block;
-            font-size: 13px;
+            font-size: 12px;
             margin-bottom: 4px;
             color: #4b5563;
         }
@@ -94,11 +109,12 @@
         select {
             width: 100%;
             padding: 8px 10px;
-            border-radius: 6px;
+            border-radius: 8px;
             border: 1px solid #d1d5db;
             font-family: inherit;
             font-size: 13px;
             resize: vertical;
+            background: #ffffff;
         }
 
         textarea:focus,
@@ -110,30 +126,36 @@
         }
 
         textarea {
-            min-height: 80px;
+            min-height: 90px;
         }
 
         .row {
             display: flex;
-            gap: 12px;
+            gap: 10px;
         }
 
         .row > .col {
             flex: 1;
         }
 
+        .hint {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-top: 4px;
+        }
+
         .buttons {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-top: 4px;
-            margin-bottom: 12px;
+            margin-top: 8px;
+            margin-bottom: 6px;
         }
 
         button {
             border-radius: 999px;
             border: none;
-            padding: 6px 14px;
+            padding: 7px 16px;
             font-size: 13px;
             cursor: pointer;
             display: inline-flex;
@@ -141,6 +163,7 @@
             gap: 6px;
             background-color: #2563eb;
             color: #ffffff;
+            font-weight: 500;
         }
 
         button.secondary {
@@ -153,204 +176,216 @@
             cursor: default;
         }
 
-        .output {
-            margin-top: 8px;
-            padding: 10px 12px;
-            border-radius: 8px;
-            background-color: #f9fafb;
-            border: 1px solid #e5e7eb;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-            font-size: 12px;
-            white-space: pre-wrap;
-            max-height: 280px;
-            overflow: auto;
-        }
-
         .output-title {
-            font-size: 12px;
+            font-size: 11px;
             margin-top: 4px;
             margin-bottom: 4px;
             color: #6b7280;
         }
 
-        .hint {
-            font-size: 11px;
-            color: #9ca3af;
+        .output {
             margin-top: 2px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            background-color: #111827;
+            border: 1px solid #020617;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            max-height: 260px;
+            overflow: auto;
+            color: #e5e7eb;
+        }
+
+        .output-empty {
+            opacity: 0.6;
+            font-style: italic;
         }
 
         .error {
-            color: #b91c1c;
+            color: #fecaca;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
             .app-root {
                 margin: 12px;
                 padding: 16px;
             }
 
-            .row {
-                flex-direction: column;
-            }
-
-            .tabs {
-                flex-wrap: wrap;
+            .agent-grid {
+                grid-template-columns: minmax(0, 1fr);
             }
         }
     </style>
 </head>
 <body>
 <div class="app-root">
-    <h1>Local AI Agents</h1>
-    <p class="subtitle">간단한 웹 UI로 Email / DevDoc 에이전트를 바로 호출해 보세요.</p>
+    <header class="app-header">
+        <h1>Local AI Agents</h1>
+        <p class="subtitle">이메일 작성과 DevDoc Q&A를 한 화면에서 간단하게 실험해 보세요.</p>
+    </header>
 
-    <div class="tabs">
-        <div class="tab active" data-tab="email">
-            <span>💌</span><span>Email Agent</span>
-        </div>
-        <div class="tab" data-tab="devdoc">
-            <span>📖</span><span>DevDoc Agent</span>
-        </div>
-    </div>
-
-    <!-- Email Agent Tab -->
-    <div class="tab-content active" id="tab-email">
-        <div class="section">
-            <div class="section-title">1. 한글 메일 초안</div>
-            <label for="email-korean-draft">한글 초안</label>
-            <textarea id="email-korean-draft" placeholder="예) 어제 회의 내용 관련해서 후속 조치 메일을 보내고 싶어..."></textarea>
-            <div class="hint">한글로 자유롭게 초안을 적어 주세요.</div>
-        </div>
-
-        <div class="section row">
-            <div class="col">
-                <label for="email-tone">tone (어조)</label>
-                <select id="email-tone">
-                    <option value="soft">soft (부드럽게)</option>
-                    <option value="formal">formal (격식 있게)</option>
-                    <option value="direct">direct (직설적으로)</option>
-                </select>
-            </div>
-            <div class="col">
-                <label for="email-mail-type">mailType (메일 유형)</label>
-                <select id="email-mail-type">
-                    <option value="AUTO">AUTO (자동 감지)</option>
-                    <option value="NEW">NEW (새 메일)</option>
-                    <option value="REPLY">REPLY (답장)</option>
-                    <option value="APOLOGY">APOLOGY (사과)</option>
-                    <option value="REMINDER">REMINDER (리마인드)</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="section">
-            <label for="email-additional-context">추가 배경 / 요청 사항</label>
-            <textarea id="email-additional-context" placeholder="수신자 정보, 회사/프로젝트 맥락, 꼭 들어갔으면 하는 문장 등을 적어 주세요."></textarea>
-        </div>
-
-        <div class="section">
-            <div class="buttons">
-                <button id="btn-generate-email">
-                    <span>영어 메일 초안 생성</span>
-                </button>
-            </div>
-            <div class="output-title">생성된 영어 메일 / 메타 정보</div>
-            <div id="email-draft-output" class="output"></div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">2. 체크리스트</div>
-            <label for="email-english-mail">체크할 영어 메일 내용</label>
-            <textarea id="email-english-mail" placeholder="위에서 생성된 메일이 자동으로 들어옵니다. 직접 수정하거나 붙여넣어도 됩니다."></textarea>
-
-            <div class="buttons">
-                <button id="btn-email-checklist" class="secondary">
-                    <span>체크리스트 확인</span>
-                </button>
+    <main class="agent-grid">
+        <!-- Email Agent -->
+        <section class="agent-card" id="email-agent">
+            <div class="agent-header">
+                <div>
+                    <div class="agent-title">
+                        <span>📧 Email Agent</span>
+                    </div>
+                    <p class="agent-desc">한국어 초안을 기반으로 영어 메일을 만들고, 체크리스트로 마지막 검토까지 할 수 있습니다.</p>
+                </div>
+                <span class="agent-tag">MAIL</span>
             </div>
 
-            <div class="output-title">체크리스트 결과</div>
-            <div id="email-checklist-output" class="output"></div>
-        </div>
-    </div>
+            <div class="section">
+                <div class="section-title">1. 한국어 → 영어 메일 초안</div>
+                <label for="email-korean-draft">한국어 메일 초안</label>
+                <textarea
+                        id="email-korean-draft"
+                        placeholder="예: 지난 장애와 후속 조치에 대해 정리해서 고객사에 공유하는 메일을 보내야 합니다. 너무 공격적으로 느껴지지 않게, 하지만 책임과 일정은 분명히 드러나게 써 주세요.">
+                </textarea>
+                <p class="hint">메일의 목적, 상대방, 말투에 대한 대략적인 느낌을 같이 적어 주면 더 좋습니다.</p>
+            </div>
 
-    <!-- DevDoc Agent Tab -->
-    <div class="tab-content" id="tab-devdoc">
-        <div class="section">
-            <div class="section-title">1. Q&amp;A</div>
-            <label for="devdoc-question">질문 (question)</label>
-            <textarea id="devdoc-question" placeholder="예) Spring Boot에서 정적 리소스 매핑이 어떻게 동작하는지 설명해줘."></textarea>
-
-            <div class="row">
+            <div class="section row">
                 <div class="col">
-                    <label for="devdoc-persona">persona</label>
-                    <input id="devdoc-persona" type="text" placeholder="예) 초보 백엔드 개발자, Tech Lead 등" />
+                    <label for="email-tone">tone (말투)</label>
+                    <select id="email-tone">
+                        <option value="soft">soft — 부드럽게</option>
+                        <option value="formal">formal — 격식 있게</option>
+                        <option value="direct">direct — 직설적으로</option>
+                    </select>
                 </div>
                 <div class="col">
-                    <label for="devdoc-topic-hint">topicHint</label>
-                    <input id="devdoc-topic-hint" type="text" placeholder="예) Spring Boot static resource, LangChain4j" />
+                    <label for="email-mail-type">mailType (메일 유형)</label>
+                    <select id="email-mail-type">
+                        <option value="AUTO">AUTO — 자동 감지</option>
+                        <option value="NEW">NEW — 신규 메일</option>
+                        <option value="REPLY">REPLY — 회신</option>
+                        <option value="APOLOGY">APOLOGY — 사과 메일</option>
+                        <option value="REMINDER">REMINDER — 리마인드</option>
+                    </select>
                 </div>
             </div>
 
-            <div class="buttons">
-                <button id="btn-devdoc-qa">
-                    <span>Q&amp;A 실행</span>
-                </button>
+            <div class="section">
+                <label for="email-additional-context">추가 배경 / 요청 사항 (선택)</label>
+                <textarea
+                        id="email-additional-context"
+                        placeholder="예: 상대 팀은 우리 시스템을 잘 모릅니다. 장애 원인 설명은 너무 기술적이지 않게, 대신 후속 액션과 재발 방지에 초점을 맞춰 주세요.">
+                </textarea>
             </div>
 
-            <div class="output-title">Q&amp;A 결과 (요약 / 상세 / 참조 스니펫)</div>
-            <div id="devdoc-qa-output" class="output"></div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">2. 학습 노트</div>
-            <div class="row">
-                <div class="col">
-                    <label for="devdoc-topic">topic</label>
-                    <input id="devdoc-topic" type="text" placeholder="예) LangChain4j로 RAG 구성하기" />
+            <div class="section">
+                <div class="buttons">
+                    <button id="btn-generate-email">
+                        <span>영어 메일 초안 생성</span>
+                    </button>
                 </div>
-                <div class="col">
-                    <label for="devdoc-note-persona">persona</label>
-                    <input id="devdoc-note-persona" type="text" placeholder="예) 주니어 서버 개발자" />
+                <div class="output-title">생성된 영어 메일 / 메타 정보</div>
+                <div id="email-draft-output" class="output output-empty">아직 생성된 메일이 없습니다.</div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">2. 메일 체크리스트</div>
+                <label for="email-english-mail">체크할 영어 메일 내용</label>
+                <textarea
+                        id="email-english-mail"
+                        placeholder="위에서 생성된 메일이 자동으로 들어오거나, 직접 작성한 영어 메일을 붙여넣어 주세요.">
+                </textarea>
+
+                <div class="buttons">
+                    <button id="btn-email-checklist" class="secondary">
+                        <span>체크리스트 확인</span>
+                    </button>
                 </div>
+
+                <div class="output-title">체크리스트 결과</div>
+                <div id="email-checklist-output" class="output output-empty">체크리스트 결과가 여기에 표시됩니다.</div>
+            </div>
+        </section>
+
+        <!-- DevDoc Agent -->
+        <section class="agent-card" id="devdoc-agent">
+            <div class="agent-header">
+                <div>
+                    <div class="agent-title">
+                        <span>📚 DevDoc Agent</span>
+                    </div>
+                    <p class="agent-desc">백엔드 개발 관점에서 Q&A를 받고, 학습용 노트도 자동으로 만들어 줍니다.</p>
+                </div>
+                <span class="agent-tag">DEVDOC</span>
             </div>
 
-            <div class="buttons">
-                <button id="btn-devdoc-note" class="secondary">
-                    <span>학습 노트 생성</span>
-                </button>
+            <div class="section">
+                <div class="section-title">1. Q&A</div>
+                <label for="devdoc-question">질문 (question)</label>
+                <textarea
+                        id="devdoc-question"
+                        placeholder="예: Spring Boot에서 정적 리소스를 효율적으로 서빙하고, 캐싱 전략을 어떻게 잡으면 좋을지 설명해 주세요.">
+                </textarea>
+
+                <div class="row">
+                    <div class="col">
+                        <label for="devdoc-persona">persona (선택)</label>
+                        <input
+                                id="devdoc-persona"
+                                type="text"
+                                placeholder="예: Java 백엔드 5년차 개발자를 대상으로 설명해 주세요.">
+                    </div>
+                    <div class="col">
+                        <label for="devdoc-topic-hint">topicHint (선택)</label>
+                        <input
+                                id="devdoc-topic-hint"
+                                type="text"
+                                placeholder="예: Spring Boot static resource, CDN, cache-control">
+                    </div>
+                </div>
+
+                <div class="buttons">
+                    <button id="btn-devdoc-qa">
+                        <span>Q&A 실행</span>
+                    </button>
+                </div>
+
+                <div class="output-title">Q&A 결과 (요약 / 상세 / 참고 문장)</div>
+                <div id="devdoc-qa-output" class="output output-empty">여기에 Q&A 결과가 표시됩니다.</div>
             </div>
 
-            <div class="output-title">생성된 학습 노트 (Markdown)</div>
-            <div id="devdoc-note-output" class="output"></div>
-        </div>
-    </div>
+            <div class="section">
+                <div class="section-title">2. 학습 노트 생성</div>
+                <div class="row">
+                    <div class="col">
+                        <label for="devdoc-topic">topic</label>
+                        <input
+                                id="devdoc-topic"
+                                type="text"
+                                placeholder="예: LangChain4j로 RAG 구성하기">
+                    </div>
+                    <div class="col">
+                        <label for="devdoc-note-persona">persona (선택)</label>
+                        <input
+                                id="devdoc-note-persona"
+                                type="text"
+                                placeholder="예: Java 주니어 서버 개발자">
+                    </div>
+                </div>
+
+                <div class="buttons">
+                    <button id="btn-devdoc-note" class="secondary">
+                        <span>학습 노트 생성</span>
+                    </button>
+                </div>
+
+                <div class="output-title">생성된 학습 노트 (Markdown)</div>
+                <div id="devdoc-note-output" class="output output-empty">생성된 학습 노트가 여기에 표시됩니다.</div>
+            </div>
+        </section>
+    </main>
 </div>
 
 <script>
-    // 탭 전환
-    (function setupTabs() {
-        const tabs = document.querySelectorAll(".tab");
-        const contents = {
-            email: document.getElementById("tab-email"),
-            devdoc: document.getElementById("tab-devdoc")
-        };
-
-        tabs.forEach(tab => {
-            tab.addEventListener("click", () => {
-                const key = tab.getAttribute("data-tab");
-                if (!key) return;
-
-                tabs.forEach(t => t.classList.remove("active"));
-                tab.classList.add("active");
-
-                Object.values(contents).forEach(c => c.classList.remove("active"));
-                const content = contents[key];
-                if (content) content.classList.add("active");
-            });
-        });
-    })();
-
     function setLoading(button, isLoading) {
         if (!button) return;
         if (isLoading) {
@@ -368,6 +403,7 @@
     async function postJson(url, body, outputElement, button) {
         if (!outputElement) return;
         setLoading(button, true);
+        outputElement.classList.remove("output-empty");
         outputElement.textContent = "요청 중...";
         try {
             const response = await fetch(url, {
@@ -420,15 +456,15 @@
 
         btn.addEventListener("click", async () => {
             const body = {
-                koreanDraft: koreanDraftEl.value || "",
+                koreanDraft: (koreanDraftEl.value || "").trim(),
                 tone: toneEl.value || "soft",
                 mailType: mailTypeEl.value || "AUTO",
-                additionalContext: contextEl.value || ""
+                additionalContext: (contextEl.value || "").trim()
             };
 
             await postJson("/api/agent/email/draft", body, outputEl, btn);
 
-            // 응답이 JSON일 경우 finalEnglishMail을 영어 메일 입력창에 자동 반영
+            // 응답이 JSON이고 finalEnglishMail이 있으면 체크리스트 입력창에 자동 반영
             try {
                 const text = outputEl.textContent || "";
                 const parsed = JSON.parse(text);
@@ -436,7 +472,7 @@
                     englishMailEl.value = parsed.finalEnglishMail;
                 }
             } catch (_) {
-                // ignore JSON parse errors
+                // JSON 파싱 에러는 무시
             }
         });
     })();
@@ -451,7 +487,7 @@
 
         btn.addEventListener("click", async () => {
             const body = {
-                englishMail: englishMailEl.value || ""
+                englishMail: (englishMailEl.value || "").trim()
             };
 
             await postJson("/api/agent/email/checklist", body, outputEl, btn);
@@ -470,9 +506,9 @@
 
         btn.addEventListener("click", async () => {
             const body = {
-                question: questionEl.value || "",
-                persona: personaEl.value || "",
-                topicHint: topicHintEl.value || ""
+                question: (questionEl.value || "").trim(),
+                persona: (personaEl.value || "").trim(),
+                topicHint: (topicHintEl.value || "").trim()
             };
 
             await postJson("/api/agent/devdoc/qa", body, outputEl, btn);
@@ -490,8 +526,8 @@
 
         btn.addEventListener("click", async () => {
             const body = {
-                topic: topicEl.value || "",
-                persona: personaEl.value || ""
+                topic: (topicEl.value || "").trim(),
+                persona: (personaEl.value || "").trim()
             };
 
             await postJson("/api/agent/devdoc/note", body, outputEl, btn);

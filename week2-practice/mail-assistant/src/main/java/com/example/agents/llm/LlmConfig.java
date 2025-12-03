@@ -5,6 +5,8 @@ import dev.langchain4j.model.ollama.OllamaChatModel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.Duration;
+
 @Configuration
 public class LlmConfig {
 
@@ -14,6 +16,7 @@ public class LlmConfig {
                 .baseUrl("http://localhost:11434")
                 .modelName("llama3.2:3b")
                 .temperature(0.3)
+                .timeout(Duration.ofSeconds(60))
                 .build();
     }
 
@@ -23,6 +26,7 @@ public class LlmConfig {
                 .baseUrl("http://localhost:11434")
                 .modelName("llama3.2:3b")
                 .temperature(0.2)
+                .timeout(Duration.ofSeconds(60))
                 .build();
     }
 }
