@@ -1,6 +1,7 @@
 package com.example.agents.rag.devdoc;
 
 import dev.langchain4j.data.embedding.Embedding;
+import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.output.Response;
 import org.junit.jupiter.api.Test;
@@ -21,9 +22,14 @@ class DevDocRagServiceTest {
         }
 
         @Override
-        public Response<List<Embedding>> embedAll(List<String> texts) {
-            List<Embedding> embeddings = texts.stream()
-                    .map(t -> Embedding.from(new float[]{t.length(), 1.0f}))
+        public Response<Embedding> embed(TextSegment textSegment) {
+            return embed(textSegment.text());
+        }
+
+        @Override
+        public Response<List<Embedding>> embedAll(List<TextSegment> segments) {
+            List<Embedding> embeddings = segments.stream()
+                    .map(t -> Embedding.from(new float[]{t.text().length(), 1.0f}))
                     .toList();
             return Response.from(embeddings);
         }
