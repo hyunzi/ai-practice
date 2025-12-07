@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: langchain4j-openai-ping
+  config:
+    import: optional:file:.env[.properties]
+
+openai:
+  api-key: ${OPENAI_API_KEY}
+
+chroma:
+  base-url: http://localhost:8000
+  collection: devdocs-stripe

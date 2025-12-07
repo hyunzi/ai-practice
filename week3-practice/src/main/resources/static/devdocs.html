@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DevDocs RAG Tester</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --accent: #38bdf8;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border: #1f2937;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at 20% 20%, rgba(56,189,248,0.1), transparent 25%), var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .layout {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      gap: 16px;
+    }
+    header h1 { margin: 0 0 4px; font-size: 24px; }
+    header p { margin: 0; color: var(--muted); }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    label { display: block; margin: 8px 0 4px; font-weight: 600; }
+    textarea, input {
+      width: 100%;
+      background: #0b1220;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 10px;
+      font-size: 14px;
+    }
+    button {
+      margin-top: 12px;
+      background: var(--accent);
+      color: #0b1220;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 120ms ease, filter 120ms ease;
+    }
+    button:hover { filter: brightness(1.05); transform: translateY(-1px); }
+    pre {
+      background: #0b1220;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      overflow: auto;
+      max-height: 320px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: var(--muted);
+    }
+    .row { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <header>
+      <h1>DevDocs RAG Tester</h1>
+      <p>Run ingestion, agent RAG, and direct OpenAI chat for comparison.</p>
+    </header>
+
+    <div class="card">
+      <h2>1) Ingest DevDocs</h2>
+      <p style="color:var(--muted);margin:0 0 8px;">Calls POST /api/devdocs/ingest</p>
+      <button id="ingestBtn">Ingest now</button>
+      <pre id="ingestResult">No runs yet.</pre>
+    </div>
+
+    <div class="card">
+      <h2>2) Ask the Agent</h2>
+      <p style="color:var(--muted);margin:0 0 8px;">Calls POST /api/agent/ask → assistant may call searchDevDocs and formatAnswerAsEmail.</p>
+      <label for="question">Question</label>
+      <textarea id="question" rows="4" placeholder="e.g., How do I update a Stripe payment method?"></textarea>
+      <button id="askBtn">Send</button>
+      <pre id="answerBox">No questions yet.</pre>
+    </div>
+
+    <div class="card">
+      <h2>3) Direct OpenAI Chat (no RAG)</h2>
+      <p style="color:var(--muted);margin:0 0 8px;">Calls POST /api/openai/chat with your message.</p>
+      <label for="rawMessage">Message</label>
+      <textarea id="rawMessage" rows="3" placeholder="e.g., Summarize how to update a payment method."></textarea>
+      <button id="rawBtn">Send to OpenAI</button>
+      <pre id="rawAnswerBox">No messages yet.</pre>
+    </div>
+  </div>
+
+  <script>
+    const ingestBtn = document.getElementById('ingestBtn');
+    const ingestResult = document.getElementById('ingestResult');
+    const askBtn = document.getElementById('askBtn');
+    const questionInput = document.getElementById('question');
+    const answerBox = document.getElementById('answerBox');
+    const rawBtn = document.getElementById('rawBtn');
+    const rawMessage = document.getElementById('rawMessage');
+    const rawAnswerBox = document.getElementById('rawAnswerBox');
+
+    ingestBtn.onclick = async () => {
+      ingestBtn.disabled = true;
+      ingestBtn.textContent = 'Running...';
+      ingestResult.textContent = 'Ingesting...';
+      try {
+        const res = await fetch('/api/devdocs/ingest', { method: 'POST' });
+        const data = await res.json();
+        ingestResult.textContent = JSON.stringify(data, null, 2);
+      } catch (e) {
+        ingestResult.textContent = 'Error: ' + e;
+      } finally {
+        ingestBtn.disabled = false;
+        ingestBtn.textContent = 'Ingest now';
+      }
+    };
+
+    askBtn.onclick = async () => {
+      const q = questionInput.value.trim();
+      if (!q) {
+        answerBox.textContent = 'Enter a question first.';
+        return;
+      }
+      askBtn.disabled = true;
+      askBtn.textContent = 'Asking...';
+      answerBox.textContent = 'Waiting for response...';
+      try {
+        const res = await fetch('/api/agent/ask', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: q })
+        });
+        const data = await res.json();
+        answerBox.textContent = data.answer ?? JSON.stringify(data, null, 2);
+      } catch (e) {
+        answerBox.textContent = 'Error: ' + e;
+      } finally {
+        askBtn.disabled = false;
+        askBtn.textContent = 'Send';
+      }
+    };
+
+    rawBtn.onclick = async () => {
+      const msg = rawMessage.value.trim();
+      if (!msg) {
+        rawAnswerBox.textContent = 'Enter a message first.';
+        return;
+      }
+      rawBtn.disabled = true;
+      rawBtn.textContent = 'Sending...';
+      rawAnswerBox.textContent = 'Waiting for response...';
+      try {
+        const res = await fetch('/api/openai/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: msg })
+        });
+        const data = await res.json();
+        rawAnswerBox.textContent = data.answer ?? JSON.stringify(data, null, 2);
+      } catch (e) {
+        rawAnswerBox.textContent = 'Error: ' + e;
+      } finally {
+        rawBtn.disabled = false;
+        rawBtn.textContent = 'Send to OpenAI';
+      }
+    };
+  </script>
+</body>
+</html>

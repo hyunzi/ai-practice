@@ -13,6 +13,7 @@ ehthumbs.db
 .idea/
 .vscode/
 *.iml
+.venv/
 
 # Node / Playwright assets
 node_modules/
