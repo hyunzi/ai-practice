@@ -10,3 +10,7 @@ openai:
 chroma:
   base-url: http://localhost:8000
   collection: devdocs-stripe
+
+logging:
+  level:
+    com.example.llmping.service: DEBUG

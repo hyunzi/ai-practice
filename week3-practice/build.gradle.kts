@@ -30,4 +30,7 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    // Ensure UTF-8 console output so Korean text does not break.
+    systemProperty("file.encoding", "UTF-8")
+    jvmArgs("--add-opens", "java.base/java.io=ALL-UNNAMED")
 }
