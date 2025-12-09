@@ -38,7 +38,7 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     }
     label { display: block; margin: 8px 0 4px; font-weight: 600; }
-    textarea, input {
+    textarea, input, select {
       width: 100%;
       background: #0b1220;
       border: 1px solid var(--border);
@@ -77,44 +77,102 @@
   <div class="layout">
     <header>
       <h1>DevDocs RAG Tester</h1>
-      <p>Run ingestion, agent RAG, and direct OpenAI chat for comparison.</p>
+      <p>Ingest → RAG query → Agent → raw LLM, plus Chroma inspection.</p>
     </header>
 
     <div class="card">
-      <h2>1) Ingest DevDocs</h2>
-      <p style="color:var(--muted);margin:0 0 8px;">Calls POST /api/devdocs/ingest</p>
+      <h2>1) Ingest DevDocs (size300 default)</h2>
+      <p style="color:var(--muted);margin:0 0 8px;">POST /api/devdocs/ingest to chunk markdown and load into vector store.</p>
       <button id="ingestBtn">Ingest now</button>
       <pre id="ingestResult">No runs yet.</pre>
     </div>
 
     <div class="card">
-      <h2>2) Ask the Agent</h2>
-      <p style="color:var(--muted);margin:0 0 8px;">Calls POST /api/agent/ask → assistant may call searchDevDocs and formatAnswerAsEmail.</p>
+      <h2>2) RAG 조회</h2>
+      <p style="color:var(--muted);margin:0 0 8px;">POST /api/devdocs/query with size300/size600 collection.</p>
+      <label for="ragQuestion">Question</label>
+      <textarea id="ragQuestion" rows="3" placeholder="e.g., How do I update a Stripe payment method?"></textarea>
+      <div class="row">
+        <div>
+          <label for="ragMode">Mode / Collection</label>
+          <select id="ragMode">
+            <option value="size300">size300 → devdocs-stripe-300</option>
+            <option value="size600">size600 → devdocs-stripe-600</option>
+          </select>
+        </div>
+        <div>
+          <label for="ragProvider">Provider (default: stripe)</label>
+          <input id="ragProvider" placeholder="stripe">
+        </div>
+      </div>
+      <button id="ragBtn">Run RAG</button>
+      <pre id="ragResult">No RAG queries yet.</pre>
+    </div>
+
+    <div class="card">
+      <h2>3) Agent에게 물어보기</h2>
+      <p style="color:var(--muted);margin:0 0 8px;">POST /api/agent/ask — agent may call RAG under the hood.</p>
       <label for="question">Question</label>
       <textarea id="question" rows="4" placeholder="e.g., How do I update a Stripe payment method?"></textarea>
+      <label for="agentMode">Mode (passed to backend; agent/tool may use it)</label>
+      <select id="agentMode">
+        <option value="size300">size300 → devdocs-stripe-300</option>
+        <option value="size600">size600 → devdocs-stripe-600</option>
+      </select>
       <button id="askBtn">Send</button>
       <pre id="answerBox">No questions yet.</pre>
     </div>
 
     <div class="card">
-      <h2>3) Direct OpenAI Chat (no RAG)</h2>
-      <p style="color:var(--muted);margin:0 0 8px;">Calls POST /api/openai/chat with your message.</p>
+      <h2>4) Raw LLM 호출 (RAG 없음)</h2>
+      <p style="color:var(--muted);margin:0 0 8px;">POST /api/openai/chat to call the model directly.</p>
       <label for="rawMessage">Message</label>
       <textarea id="rawMessage" rows="3" placeholder="e.g., Summarize how to update a payment method."></textarea>
       <button id="rawBtn">Send to OpenAI</button>
       <pre id="rawAnswerBox">No messages yet.</pre>
+    </div>
+
+    <div class="card">
+      <h2>5) Chroma 컬렉션 확인</h2>
+      <p style="color:var(--muted);margin:0 0 8px;">List collections and preview documents (Chroma 서버가 켜져 있어야 합니다).</p>
+      <button id="listCollectionsBtn">List Collections</button>
+      <pre id="collectionsBox">No collections yet.</pre>
+      <div class="row">
+        <div>
+          <label for="previewCollection">Collection name</label>
+          <input id="previewCollection" placeholder="devdocs-stripe-300">
+        </div>
+        <div>
+          <label for="previewLimit">Limit</label>
+          <input id="previewLimit" type="number" value="5" min="1" max="50">
+        </div>
+      </div>
+      <button id="previewBtn">Preview documents</button>
+      <pre id="previewBox">No preview yet.</pre>
     </div>
   </div>
 
   <script>
     const ingestBtn = document.getElementById('ingestBtn');
     const ingestResult = document.getElementById('ingestResult');
+    const ragBtn = document.getElementById('ragBtn');
+    const ragQuestion = document.getElementById('ragQuestion');
+    const ragMode = document.getElementById('ragMode');
+    const ragProvider = document.getElementById('ragProvider');
+    const ragResult = document.getElementById('ragResult');
     const askBtn = document.getElementById('askBtn');
     const questionInput = document.getElementById('question');
+    const agentMode = document.getElementById('agentMode');
     const answerBox = document.getElementById('answerBox');
     const rawBtn = document.getElementById('rawBtn');
     const rawMessage = document.getElementById('rawMessage');
     const rawAnswerBox = document.getElementById('rawAnswerBox');
+    const listCollectionsBtn = document.getElementById('listCollectionsBtn');
+    const collectionsBox = document.getElementById('collectionsBox');
+    const previewCollection = document.getElementById('previewCollection');
+    const previewLimit = document.getElementById('previewLimit');
+    const previewBtn = document.getElementById('previewBtn');
+    const previewBox = document.getElementById('previewBox');
 
     ingestBtn.onclick = async () => {
       ingestBtn.disabled = true;
@@ -132,6 +190,35 @@
       }
     };
 
+    ragBtn.onclick = async () => {
+      const q = ragQuestion.value.trim();
+      if (!q) {
+        ragResult.textContent = 'Enter a question first.';
+        return;
+      }
+      ragBtn.disabled = true;
+      ragBtn.textContent = 'Running...';
+      ragResult.textContent = 'Querying RAG...';
+      try {
+        const res = await fetch('/api/devdocs/query', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            question: q,
+            mode: ragMode.value,
+            provider: ragProvider.value || 'stripe'
+          })
+        });
+        const data = await res.json();
+        ragResult.textContent = JSON.stringify(data, null, 2);
+      } catch (e) {
+        ragResult.textContent = 'Error: ' + e;
+      } finally {
+        ragBtn.disabled = false;
+        ragBtn.textContent = 'Run RAG';
+      }
+    };
+
     askBtn.onclick = async () => {
       const q = questionInput.value.trim();
       if (!q) {
@@ -145,7 +232,7 @@
         const res = await fetch('/api/agent/ask', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question: q })
+          body: JSON.stringify({ question: q, mode: agentMode.value })
         });
         const data = await res.json();
         answerBox.textContent = data.answer ?? JSON.stringify(data, null, 2);
@@ -179,6 +266,44 @@
       } finally {
         rawBtn.disabled = false;
         rawBtn.textContent = 'Send to OpenAI';
+      }
+    };
+
+    listCollectionsBtn.onclick = async () => {
+      listCollectionsBtn.disabled = true;
+      listCollectionsBtn.textContent = 'Loading...';
+      collectionsBox.textContent = 'Fetching collections...';
+      try {
+        const res = await fetch('/api/devdocs/collections');
+        const data = await res.json();
+        collectionsBox.textContent = JSON.stringify(data, null, 2);
+      } catch (e) {
+        collectionsBox.textContent = 'Error: ' + e;
+      } finally {
+        listCollectionsBtn.disabled = false;
+        listCollectionsBtn.textContent = 'List Collections';
+      }
+    };
+
+    previewBtn.onclick = async () => {
+      const name = (previewCollection.value || '').trim();
+      const limit = parseInt(previewLimit.value || '5', 10);
+      if (!name) {
+        previewBox.textContent = 'Enter a collection name.';
+        return;
+      }
+      previewBtn.disabled = true;
+      previewBtn.textContent = 'Loading...';
+      previewBox.textContent = 'Fetching preview...';
+      try {
+        const res = await fetch(`/api/devdocs/collections/${encodeURIComponent(name)}/preview?limit=${limit}`);
+        const data = await res.json();
+        previewBox.textContent = JSON.stringify(data, null, 2);
+      } catch (e) {
+        previewBox.textContent = 'Error: ' + e;
+      } finally {
+        previewBtn.disabled = false;
+        previewBtn.textContent = 'Preview documents';
       }
     };
   </script>

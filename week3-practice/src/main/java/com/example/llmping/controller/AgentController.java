@@ -20,9 +20,11 @@ public class AgentController {
     }
 
     @PostMapping("/ask")
-    public ResponseEntity<Map<String, String>> ask(@RequestBody Map<String, String> payload) {
-        String question = payload.getOrDefault("question", "");
+    public ResponseEntity<Map<String, String>> ask(@RequestBody AskRequest payload) {
+        String question = payload.question() == null ? "" : payload.question();
         String answer = assistant.answer(question);
         return ResponseEntity.ok(Map.of("answer", answer));
     }
+
+    public record AskRequest(String question, String mode) {}
 }

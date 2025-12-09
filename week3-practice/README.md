@@ -1,47 +1,43 @@
 # DevDocs RAG Assistant (Week 3)
 
-Stripe DevDocs를 검색해 답변과 이메일 초안을 만들어 주는 Spring Boot + LangChain4j 예제입니다. OpenAI LLM, RAG, 함수 호출 기반 툴 체인을 사용하며, UI는 `static/devdocs.html`에서 바로 확인할 수 있습니다. 🔍✉️
+Stripe DevDocs 마크다운을 쪼개 벡터화하고 RAG 검색을 붙인 Spring Boot + LangChain4j 샘플입니다. 기본 OpenAI 모델은 `gpt-4o-mini` / `text-embedding-3-small`이며, Chroma가 없으면 인메모리 스토어로 자동 폴백합니다. 간단한 HTML 테스트 페이지(`src/main/resources/static/devdocs.html`)로 인젝션·RAG·에이전트·원본 LLM 호출·Chroma 조회를 한 번에 확인할 수 있습니다.
 
-## 프로젝트 한눈에 👀
-- Markdown 소스(`data/devdocs/stripe/**/*.md`)를 청킹·임베딩해 Chroma(또는 메모리) 벡터 스토어에 적재.
-- LangChain4j AiService가 에이전트 질문을 받아 LLM을 호출하고, 필요하면 RAG 검색/이메일 포맷팅 툴을 자동 호출.
-- RAG 없이 LLM만 호출하는 비교 엔드포인트와 브라우저 테스트 페이지(`/devdocs.html`) 제공.
+## 주요 기능
+- DevDocs 인젝션: `data/devdocs/stripe/**/*.md`를 `chunkSize=300, overlap=80`(기본)으로 분할해 `devdocs-stripe-300` 컬렉션에 저장. `size600` 모드도 선택 가능(`devdocs-stripe-600`).
+- RAG 검색: 쿼리를 임베딩 후 상위 K(기본 3) 청크를 반환하고 메타데이터(`provider/section/fileName/chunkIndex`)까지 로그로 남김.
+- 에이전트/툴: LangChain4j AiService(`DevDocsAssistant`)가 `searchDevDocs(query, provider, mode)`와 `formatAnswerAsEmail(summary, recipientRole, tone)` 두 가지 툴을 호출해 답변을 구성.
+- UI 데모: `/devdocs.html`에서 인젝션 → RAG → 에이전트 → Raw LLM → Chroma 조회까지 실험.
+- Chroma 인트로스펙션: 컬렉션 목록 조회 및 문서 샘플 프리뷰 엔드포인트 제공(Chroma HTTP API 사용).
 
-## 기술 적용 상세 🛠️
-- **LLM 호출 🤖**  
-  `OpenAiChatController`가 `ChatLanguageModel.generate()`로 직접 응답을 생성합니다. `OpenAiConfig`에서 `gpt-4o-mini`(chat), `text-embedding-3-small`(embedding)을 API 키 기반으로 빈 등록합니다.
+## 아키텍처 한눈에 보기
+- 컨피그: `config/OpenAiConfig`, `ChromaConfig`(+`ChromaStoreFactory` 폴백), `AgentConfig`에서 모델/스토어/에이전트 빈을 구성.
+- 인젝션: `service/DevDocsIngestionService`가 파일을 청크 → 임베딩 → 컬렉션에 저장.
+- 검색: `service/DevDocsRagService`가 쿼리 임베딩 후 top-k 검색 및 디버그 로그(`rag_debug=...`) 출력.
+- 툴: `tool/DevDocsTools`에서 RAG 호출과 이메일 포매터 제공.
+- REST: `controller/DevDocsController`(ingest/query/Chroma 조회), `AgentController`(에이전트 질문), `OpenAiChatController`(Raw LLM 호출).
 
-- **Prompt chain 🧩**  
-  `DevDocsAssistant` 인터페이스에 `@SystemMessage`로 “Stripe DevDocs를 검색해 친절히 답변” 역할을 정의하고, `@UserMessage`로 사용자의 질문을 전달합니다. LangChain4j AiService가 **시스템 프롬프트 → 사용자 질문 → (필요 시) 툴 결과 → 최종 답변** 순서의 체인을 구성합니다.
-
-- **Function calling / Tool use / Workflow 🔗**  
-  `AgentConfig`에서 AiService에 `DevDocsTools`를 등록하면 LLM이 자동으로 함수 호출을 결정합니다.  
-  - `searchDevDocs(query, provider)`: RAG 검색 결과 상위 3개 청크를 합쳐 컨텍스트로 제공.  
-  - `formatAnswerAsEmail(answerSummary, recipientRole, tone)`: 답변 요약을 이메일 초안 형태로 포맷.  
-  전체 흐름: **사용자 요청 → `/api/agent/ask` → AiService → 필요 툴 자동 호출 → LLM이 최종 답변/초안 작성**.
-
-- **RAG · Chunking/Embedding 📚**  
-  `DevDocsIngestionService`가 `DocumentSplitters.recursive(300, 80, OpenAiTokenizer)`로 약 300토큰 단위, 80토큰 오버랩 청킹을 수행합니다. 각 세그먼트를 `OpenAiEmbeddingModel`로 임베딩 후 `EmbeddingStore`(기본 Chroma, 실패 시 `InMemoryEmbeddingStore`)에 `provider/section/fileName/chunkIndex` 메타데이터와 함께 저장합니다.  
-  `DevDocsRagService`는 질의를 임베딩하고 `findRelevant(topK)`로 유사도가 높은 청크를 조회해 에이전트 툴(`searchDevDocs`)에 공급합니다.
-
-## 실행 방법 ▶️
-1) OpenAI 키 설정: PowerShell `setx OPENAI_API_KEY "sk-..."` 또는 `week3-practice/.env`에 `OPENAI_API_KEY=...` 추가  
-2) (선택) Chroma 실행: `docker run -d --name chroma -p 8000:8000 ghcr.io/chroma-core/chroma:latest`  
-3) 앱 실행:
+## 실행 방법
+1) OpenAI 키 설정: PowerShell `setx OPENAI_API_KEY "sk-..."` 또는 `week3-practice/.env`에 `OPENAI_API_KEY=...` 추가.  
+2) (선택) Chroma 실행: `docker run -d --name chroma -p 8000:8000 ghcr.io/chroma-core/chroma:latest` (없으면 자동 인메모리 사용).  
+3) 서버 실행:
 ```bash
 cd week3-practice
 ./gradlew bootRun
 ```
+4) UI 접근: 브라우저에서 `http://localhost:8080/devdocs.html`.
 
-## API 엔드포인트 🌐
-- `POST /api/devdocs/ingest` : DevDocs 청킹·임베딩 후 벡터스토어 적재, 샘플 5개 반환
-- `POST /api/agent/ask` : `{ "question": "..." }` → RAG 에이전트 응답(필요 시 툴 호출 포함)
-- `POST /api/openai/chat` : `{ "message": "..." }` → RAG 없이 LLM 직접 호출
-- UI: `http://localhost:8080/devdocs.html`
+## 주요 API
+- `POST /api/devdocs/ingest` : DevDocs를 청크·임베딩 후 벡터 스토어에 저장(샘플 5개 포함 응답).
+- `POST /api/devdocs/query` : `{ question, provider="stripe", mode="size300|size600" }`로 RAG top-k(기본 3) 청크 조회.
+- `POST /api/agent/ask` : `{ question, mode }`로 에이전트에게 질의(툴 호출 가능).
+- `POST /api/openai/chat` : `{ message }`로 RAG 없이 모델 직접 호출.
+- `GET /api/devdocs/collections` : Chroma 컬렉션 이름 목록.
+- `GET /api/devdocs/collections/{name}/preview?limit=5` : 지정 컬렉션 문서/메타데이터 샘플 프리뷰.
 
-## 코드 맵 🗺️
-- 설정: `src/main/java/com/example/llmping/config/` (`OpenAiConfig`, `ChromaConfig`, `AgentConfig`)
-- RAG 처리: `service/DevDocsIngestionService.java`, `service/DevDocsRagService.java`
-- 툴: `tool/DevDocsTools.java`
-- REST: `controller/DevDocsController.java`, `AgentController.java`, `OpenAiChatController.java`
-- 에이전트 프롬프트: `agent/DevDocsAssistant.java`
+## 데이터 · 컬렉션
+- 원본 위치: `data/devdocs/stripe/**/*.md`
+- 기본 컬렉션: `devdocs-stripe-300`(chunk 300), 추가: `devdocs-stripe-600`(chunk 600)
+- 메타데이터: `provider`, `section`(상위 폴더), `fileName`, `chunkIndex`
+
+## 로깅
+`logging.level.com.example.llmping.service=DEBUG`일 때 `DevDocsRagService`가 최종 프롬프트/쿼리/매치 정보를 `rag_debug=...` 형태로 남깁니다.

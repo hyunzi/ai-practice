@@ -31,7 +31,7 @@ class DevDocsRagServiceIntegrationTest {
 
     private void printAnswer(String query) {
         // finalPrompt can be any string that matches the last prompt sent to LLM; here we pass query for visibility.
-        List<TextSegment> chunks = ragService.searchTopChunks(query, "stripe", 3, query);
+        List<TextSegment> chunks = ragService.searchTopChunks(query, "stripe", 3, query, null);
         String answer = chunks.stream()
                 .map(TextSegment::text)
                 .collect(Collectors.joining("\n---\n"));

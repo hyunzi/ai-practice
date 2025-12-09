@@ -1,5 +1,6 @@
 package com.example.llmping.service;
 
+import com.example.llmping.config.ChromaStoreFactory;
 import com.example.llmping.model.RagDebugInfo;
 import com.example.llmping.model.RetrievedChunkInfo;
 import dev.langchain4j.data.embedding.Embedding;
@@ -13,37 +14,42 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
 public class DevDocsRagService {
 
     private static final Logger log = LoggerFactory.getLogger(DevDocsRagService.class);
+    private static final String COLLECTION_SIZE_300 = "devdocs-stripe-300";
+    private static final String COLLECTION_SIZE_600 = "devdocs-stripe-600";
 
     private final EmbeddingModel embeddingModel;
-    private final EmbeddingStore<TextSegment> embeddingStore;
+    private final ChromaStoreFactory chromaStoreFactory;
 
-    public DevDocsRagService(EmbeddingModel embeddingModel, EmbeddingStore<TextSegment> embeddingStore) {
+    public DevDocsRagService(EmbeddingModel embeddingModel, ChromaStoreFactory chromaStoreFactory) {
         this.embeddingModel = embeddingModel;
-        this.embeddingStore = embeddingStore;
+        this.chromaStoreFactory = chromaStoreFactory;
     }
 
     /**
-     * Embed the query and retrieve top-k relevant chunks from the embedding store.
+     * Default search using 300-size collection.
      */
     public List<TextSegment> searchTopChunks(String query, String provider, int topK) {
-        return searchTopChunks(query, provider, topK, null);
+        return searchTopChunks(query, provider, topK, null, null);
     }
 
     /**
      * Embed the query, retrieve top-k chunks, and log debug info including the final prompt.
+     * Mode selects the Chroma collection: size300 → devdocs-stripe-300, size600 → devdocs-stripe-600, otherwise default size300.
      */
-    public List<TextSegment> searchTopChunks(String query, String provider, int topK, String finalPrompt) {
+    public List<TextSegment> searchTopChunks(String query, String provider, int topK, String finalPrompt, String mode) {
         if (query == null || query.isBlank()) {
             return Collections.emptyList();
         }
+        EmbeddingStore<TextSegment> store = resolveStore(mode);
         Embedding queryEmbedding = embeddingModel.embed(query).content();
-        List<EmbeddingMatch<TextSegment>> matches = embeddingStore.findRelevant(queryEmbedding, topK);
+        List<EmbeddingMatch<TextSegment>> matches = store.findRelevant(queryEmbedding, topK);
 
         List<RetrievedChunkInfo> chunkInfos = matches.stream()
                 .map(this::toChunkInfo)
@@ -55,6 +61,13 @@ public class DevDocsRagService {
                 .map(EmbeddingMatch::embedded)
                 .filter(segment -> segment != null)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Convenience for clients: run RAG with default provider "stripe" and mode-based collection.
+     */
+    public List<TextSegment> query(String query, String mode) {
+        return searchTopChunks(query, "stripe", 3, null, mode);
     }
 
     private RetrievedChunkInfo toChunkInfo(EmbeddingMatch<TextSegment> match) {
@@ -163,5 +176,15 @@ public class DevDocsRagService {
             }
         }
         return sb.toString();
+    }
+
+    private EmbeddingStore<TextSegment> resolveStore(String mode) {
+        String normalized = mode == null ? "" : mode.toLowerCase(Locale.ROOT);
+        String collection = switch (normalized) {
+            case "size600" -> COLLECTION_SIZE_600;
+            case "size300", "" -> COLLECTION_SIZE_300;
+            default -> COLLECTION_SIZE_300;
+        };
+        return chromaStoreFactory.create(collection);
     }
 }

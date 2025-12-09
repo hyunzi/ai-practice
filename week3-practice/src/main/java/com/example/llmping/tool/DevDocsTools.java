@@ -17,9 +17,9 @@ public class DevDocsTools {
         this.ragService = ragService;
     }
 
-    @Tool("Search devdocs with a user query and provider, then return top 3 chunks concatenated.")
-    public String searchDevDocs(String query, String provider) {
-        List<TextSegment> top = ragService.searchTopChunks(query, provider, 3);
+    @Tool("Search devdocs with a user query, provider, and optional mode(size300|size600), then return top 3 chunks concatenated.")
+    public String searchDevDocs(String query, String provider, String mode) {
+        List<TextSegment> top = ragService.searchTopChunks(query, provider, 3, null, mode);
         if (top.isEmpty()) {
             return "No results found.";
         }

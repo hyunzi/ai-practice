@@ -1,6 +1,7 @@
 package com.example.llmping.service;
 
 import com.example.llmping.model.EmbeddingDocument;
+import com.example.llmping.config.ChromaStoreFactory;
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.DocumentSplitter;
 import dev.langchain4j.data.document.Metadata;
@@ -27,38 +28,53 @@ import java.util.Map;
 public class DevDocsIngestionService {
 
     private final EmbeddingModel embeddingModel;
-    private final EmbeddingStore<TextSegment> embeddingStore;
+    private final ChromaStoreFactory chromaStoreFactory;
     private final Path devDocsDir;
     private final List<EmbeddingDocument> ingested = new ArrayList<>();
 
     public DevDocsIngestionService(
             EmbeddingModel embeddingModel,
-            EmbeddingStore<TextSegment> embeddingStore,
+            ChromaStoreFactory chromaStoreFactory,
             @Value("${devdocs.stripe.path:data/devdocs/stripe}") String devDocsPath) {
         this.embeddingModel = embeddingModel;
-        this.embeddingStore = embeddingStore;
+        this.chromaStoreFactory = chromaStoreFactory;
         this.devDocsDir = Paths.get(devDocsPath);
     }
 
+    public List<EmbeddingDocument> ingestStripeDocsSize300() throws IOException {
+        return ingestDocs(300, 80, "devdocs-stripe-300");
+    }
+
+    public List<EmbeddingDocument> ingestStripeDocsSize600() throws IOException {
+        return ingestDocs(600, 80, "devdocs-stripe-600");
+    }
+
     /**
-     * Reads all markdown files under devdocs directory, chunks them, embeds each chunk,
-     * and stores them in an in-memory vector store.
+     * Backward-compatible: default to 300-size ingestion.
      */
     public List<EmbeddingDocument> ingest() throws IOException {
+        return ingestStripeDocsSize300();
+    }
+
+    /**
+     * Reads markdown files, chunks, embeds, and stores them into a specified collection.
+     */
+    public List<EmbeddingDocument> ingestDocs(int chunkSize, int overlap, String collectionName) throws IOException {
         ingested.clear();
 
         if (!Files.exists(devDocsDir)) {
             return Collections.emptyList();
         }
 
-        DocumentSplitter splitter = DocumentSplitters.recursive(300, 80, new OpenAiTokenizer("gpt-4o-mini"));
+        EmbeddingStore<TextSegment> embeddingStore = chromaStoreFactory.create(collectionName);
+        DocumentSplitter splitter = DocumentSplitters.recursive(chunkSize, overlap, new OpenAiTokenizer("gpt-4o-mini"));
 
         Files.walk(devDocsDir)
                 .filter(Files::isRegularFile)
                 .filter(path -> path.getFileName().toString().endsWith(".md"))
                 .forEach(path -> {
-            try {
-                        processFile(path, splitter);
+                    try {
+                        processFile(path, splitter, embeddingStore);
                     } catch (IOException e) {
                         throw new RuntimeException("Failed to process file: " + path, e);
                     }
@@ -67,7 +83,7 @@ public class DevDocsIngestionService {
         return List.copyOf(ingested);
     }
 
-    private void processFile(Path path, DocumentSplitter splitter) throws IOException {
+    private void processFile(Path path, DocumentSplitter splitter, EmbeddingStore<TextSegment> embeddingStore) throws IOException {
         String content = Files.readString(path, StandardCharsets.UTF_8);
 
         if (content == null || content.isBlank()) {
