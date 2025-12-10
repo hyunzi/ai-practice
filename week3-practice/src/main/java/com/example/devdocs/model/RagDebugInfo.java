@@ -1,4 +1,4 @@
-package com.example.llmping.model;
+package com.example.devdocs.model;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.example.llmping.config;
+package com.example.devdocs.config;
 
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;

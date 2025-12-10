@@ -1,6 +1,6 @@
-package com.example.llmping.controller;
+package com.example.devdocs.controller;
 
-import com.example.llmping.agent.DevDocsAssistant;
+import com.example.devdocs.agent.DevDocsAssistant;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

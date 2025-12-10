@@ -1,7 +1,7 @@
-package com.example.llmping.service;
+package com.example.devdocs.service;
 
-import com.example.llmping.model.EmbeddingDocument;
-import com.example.llmping.config.ChromaStoreFactory;
+import com.example.devdocs.model.EmbeddingDocument;
+import com.example.devdocs.config.ChromaStoreFactory;
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.DocumentSplitter;
 import dev.langchain4j.data.document.Metadata;

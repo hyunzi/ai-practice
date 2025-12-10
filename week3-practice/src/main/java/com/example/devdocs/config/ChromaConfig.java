@@ -1,4 +1,4 @@
-package com.example.llmping.config;
+package com.example.devdocs.config;
 
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.store.embedding.EmbeddingStore;

@@ -1,6 +1,6 @@
-package com.example.llmping.tool;
+package com.example.devdocs.tool;
 
-import com.example.llmping.service.DevDocsRagService;
+import com.example.devdocs.service.DevDocsRagService;
 import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.data.segment.TextSegment;
 import org.springframework.stereotype.Component;

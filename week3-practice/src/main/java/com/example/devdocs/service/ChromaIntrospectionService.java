@@ -1,4 +1,4 @@
-package com.example.llmping.service;
+package com.example.devdocs.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package com.example.llmping.model;
+package com.example.devdocs.model;
 
 import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.embedding.Embedding;

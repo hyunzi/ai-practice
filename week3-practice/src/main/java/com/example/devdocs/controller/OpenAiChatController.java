@@ -1,4 +1,4 @@
-package com.example.llmping.controller;
+package com.example.devdocs.controller;
 
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.example.llmping.model;
+package com.example.devdocs.model;
 
 /**
  * Represents a single retrieved chunk with key metadata for debugging.

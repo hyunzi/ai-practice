@@ -1,7 +1,7 @@
-package com.example.llmping.config;
+package com.example.devdocs.config;
 
-import com.example.llmping.agent.DevDocsAssistant;
-import com.example.llmping.tool.DevDocsTools;
+import com.example.devdocs.agent.DevDocsAssistant;
+import com.example.devdocs.tool.DevDocsTools;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.service.AiServices;
 import org.springframework.context.annotation.Bean;

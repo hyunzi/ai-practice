@@ -1,4 +1,4 @@
-package com.example.llmping.service;
+﻿package com.example.devdocs.service;
 
 import dev.langchain4j.data.segment.TextSegment;
 import org.junit.jupiter.api.Test;
@@ -16,17 +16,17 @@ class DevDocsRagServiceIntegrationTest {
 
     @Test
     void q1_webhook_retry_policy() {
-        printAnswer("Stripe webhook 재시도 횟수와 간격 알려줘");
+        printAnswer("How does Stripe recommend setting webhook retry intervals?");
     }
 
     @Test
     void q2_payment_fail_error_codes() {
-        printAnswer("결제 실패 시 Stripe가 에러 코드를 어떻게 반환하는지 알고 싶어");
+        printAnswer("What error codes does Stripe return for failed payments, and how should we handle them?");
     }
 
     @Test
     void q3_signature_verification() {
-        printAnswer("결제 이벤트 시그니처 검증 방법 설명해줘");
+        printAnswer("Explain the signature verification process for Stripe webhook events.");
     }
 
     private void printAnswer(String query) {

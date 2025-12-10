@@ -13,4 +13,4 @@ chroma:
 
 logging:
   level:
-    com.example.llmping.service: DEBUG
+    com.example.devdocs.service: DEBUG

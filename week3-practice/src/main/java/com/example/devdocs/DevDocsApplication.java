@@ -1,4 +1,4 @@
-package com.example.llmping;
+package com.example.devdocs;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package com.example.llmping;
+package com.example.devdocs;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

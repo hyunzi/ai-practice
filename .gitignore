@@ -15,18 +15,11 @@ ehthumbs.db
 *.iml
 .venv/
 
-# Node / Playwright assets
-node_modules/
-playwright-report/
-test-results/
-**/.last-run.json
-**/.playwright-artifacts-*/
-**/screenshots/
-
 # Build outputs
 dist/
 build/
 coverage/
+chroma_db/
 
 # Java / Maven artifacts
 *.class
@@ -47,5 +40,4 @@ week1-practice/mini-readers/data/*.sqlite
 .gradle/
 
 # Misc
-data/
 skills/

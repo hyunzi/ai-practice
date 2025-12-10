@@ -1,8 +1,8 @@
-package com.example.llmping.service;
+package com.example.devdocs.service;
 
-import com.example.llmping.config.ChromaStoreFactory;
-import com.example.llmping.model.RagDebugInfo;
-import com.example.llmping.model.RetrievedChunkInfo;
+import com.example.devdocs.config.ChromaStoreFactory;
+import com.example.devdocs.model.RagDebugInfo;
+import com.example.devdocs.model.RetrievedChunkInfo;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.embedding.EmbeddingModel;
@@ -41,7 +41,7 @@ public class DevDocsRagService {
 
     /**
      * Embed the query, retrieve top-k chunks, and log debug info including the final prompt.
-     * Mode selects the Chroma collection: size300 → devdocs-stripe-300, size600 → devdocs-stripe-600, otherwise default size300.
+     * Mode selects the Chroma collection: size300 ??devdocs-stripe-300, size600 ??devdocs-stripe-600, otherwise default size300.
      */
     public List<TextSegment> searchTopChunks(String query, String provider, int topK, String finalPrompt, String mode) {
         if (query == null || query.isBlank()) {

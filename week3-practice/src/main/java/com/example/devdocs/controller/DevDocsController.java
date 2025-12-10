@@ -1,10 +1,10 @@
-package com.example.llmping.controller;
+package com.example.devdocs.controller;
 
-import com.example.llmping.model.EmbeddingDocument;
-import com.example.llmping.service.DevDocsIngestionService;
-import com.example.llmping.service.DevDocsRagService;
-import com.example.llmping.service.ChromaIntrospectionService;
-import com.example.llmping.service.ChromaIntrospectionService.ChromaPreviewItem;
+import com.example.devdocs.model.EmbeddingDocument;
+import com.example.devdocs.service.DevDocsIngestionService;
+import com.example.devdocs.service.DevDocsRagService;
+import com.example.devdocs.service.ChromaIntrospectionService;
+import com.example.devdocs.service.ChromaIntrospectionService.ChromaPreviewItem;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

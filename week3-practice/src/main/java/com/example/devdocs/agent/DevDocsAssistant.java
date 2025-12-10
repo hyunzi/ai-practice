@@ -1,4 +1,4 @@
-package com.example.llmping.agent;
+package com.example.devdocs.agent;
 
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
