@@ -1,13 +1,13 @@
-<!doctype html>
-<html lang="en">
+﻿<!doctype html>
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>DevDocs RAG Tester</title>
+  <title>DevDocs RAG 테스트</title>
   <style>
     :root {
-      --bg: #0f172a;
-      --panel: #111827;
+      --bg: #0b1220;
+      --panel: #0f172a;
       --accent: #38bdf8;
       --text: #e5e7eb;
       --muted: #9ca3af;
@@ -16,19 +16,19 @@
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
-      background: radial-gradient(circle at 20% 20%, rgba(56,189,248,0.1), transparent 25%), var(--bg);
+      font-family: "Inter", "Pretendard", "Noto Sans KR", system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at 18% 20%, rgba(56,189,248,0.12), transparent 25%), var(--bg);
       color: var(--text);
       min-height: 100vh;
       padding: 24px;
     }
     .layout {
-      max-width: 960px;
+      max-width: 1000px;
       margin: 0 auto;
       display: grid;
       gap: 16px;
     }
-    header h1 { margin: 0 0 4px; font-size: 24px; }
+    header h1 { margin: 0 0 6px; font-size: 24px; }
     header p { margin: 0; color: var(--muted); }
     .card {
       background: var(--panel);
@@ -37,7 +37,8 @@
       padding: 16px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     }
-    label { display: block; margin: 8px 0 4px; font-weight: 600; }
+    .card h2 { margin: 0 0 6px; font-size: 18px; }
+    label { display: block; margin: 10px 0 4px; font-weight: 600; }
     textarea, input, select {
       width: 100%;
       background: #0b1220;
@@ -65,81 +66,82 @@
       border-radius: 8px;
       padding: 12px;
       overflow: auto;
-      max-height: 320px;
+      max-height: 360px;
       white-space: pre-wrap;
       word-break: break-word;
       color: var(--muted);
     }
-    .row { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    .row { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    .hint { margin: 0 0 8px; color: var(--muted); font-size: 14px; }
   </style>
 </head>
 <body>
   <div class="layout">
     <header>
-      <h1>DevDocs RAG Tester</h1>
-      <p>Ingest → RAG query → Agent → raw LLM, plus Chroma inspection.</p>
+      <h1>DevDocs RAG 테스트</h1>
+      <p>적재 → 검색 → 에이전트 → LLM → Chroma 점검을 한 화면에서 확인하세요.</p>
     </header>
 
     <div class="card">
-      <h2>1) Ingest DevDocs (size300 default)</h2>
-      <p style="color:var(--muted);margin:0 0 8px;">POST /api/devdocs/ingest to chunk markdown and load into vector store.</p>
-      <button id="ingestBtn">Ingest now</button>
-      <pre id="ingestResult">No runs yet.</pre>
+      <h2>1) DevDocs 적재 (기본 size300)</h2>
+      <p class="hint">`/api/devdocs/ingest`로 마크다운을 chunk/임베딩 후 스토어에 넣습니다.</p>
+      <button id="ingestBtn">지금 적재</button>
+      <pre id="ingestResult">아직 실행 전입니다.</pre>
     </div>
 
     <div class="card">
-      <h2>2) RAG 조회</h2>
-      <p style="color:var(--muted);margin:0 0 8px;">POST /api/devdocs/query with size300/size600 collection.</p>
-      <label for="ragQuestion">Question</label>
-      <textarea id="ragQuestion" rows="3" placeholder="e.g., How do I update a Stripe payment method?"></textarea>
+      <h2>2) RAG 검색</h2>
+      <p class="hint">`/api/devdocs/query`로 size300/size600 컬렉션을 조회합니다.</p>
+      <label for="ragQuestion">질문</label>
+      <textarea id="ragQuestion" rows="3" placeholder="예) How do I update a Stripe payment method?"></textarea>
       <div class="row">
         <div>
-          <label for="ragMode">Mode / Collection</label>
+          <label for="ragMode">모드 / 컬렉션</label>
           <select id="ragMode">
             <option value="size300">size300 → devdocs-stripe-300</option>
             <option value="size600">size600 → devdocs-stripe-600</option>
           </select>
         </div>
         <div>
-          <label for="ragProvider">Provider (default: stripe)</label>
+          <label for="ragProvider">Provider (기본: stripe)</label>
           <input id="ragProvider" placeholder="stripe">
         </div>
       </div>
-      <button id="ragBtn">Run RAG</button>
-      <pre id="ragResult">No RAG queries yet.</pre>
+      <button id="ragBtn">RAG 실행</button>
+      <pre id="ragResult">아직 실행 전입니다.</pre>
     </div>
 
     <div class="card">
-      <h2>3) Agent에게 물어보기</h2>
-      <p style="color:var(--muted);margin:0 0 8px;">POST /api/agent/ask — agent may call RAG under the hood.</p>
-      <label for="question">Question</label>
-      <textarea id="question" rows="4" placeholder="e.g., How do I update a Stripe payment method?"></textarea>
-      <label for="agentMode">Mode (passed to backend; agent/tool may use it)</label>
+      <h2>3) 에이전트에게 묻기</h2>
+      <p class="hint">`/api/agent/ask` (필요 시 RAG 툴 사용). 간단한 베이스라인 에이전트입니다.</p>
+      <label for="question">질문</label>
+      <textarea id="question" rows="4" placeholder="예) Stripe webhook 서명 검증 과정을 설명해줘."></textarea>
+      <label for="agentMode">Mode (백엔드로 전달)</label>
       <select id="agentMode">
         <option value="size300">size300 → devdocs-stripe-300</option>
         <option value="size600">size600 → devdocs-stripe-600</option>
       </select>
-      <button id="askBtn">Send</button>
-      <pre id="answerBox">No questions yet.</pre>
+      <button id="askBtn">질문 보내기</button>
+      <pre id="answerBox">아직 질문 전입니다.</pre>
     </div>
 
     <div class="card">
-      <h2>4) Raw LLM 호출 (RAG 없음)</h2>
-      <p style="color:var(--muted);margin:0 0 8px;">POST /api/openai/chat to call the model directly.</p>
-      <label for="rawMessage">Message</label>
-      <textarea id="rawMessage" rows="3" placeholder="e.g., Summarize how to update a payment method."></textarea>
-      <button id="rawBtn">Send to OpenAI</button>
-      <pre id="rawAnswerBox">No messages yet.</pre>
+      <h2>4) Raw LLM 호출 (RAG 없이)</h2>
+      <p class="hint">`/api/openai/chat`으로 모델만 직접 호출합니다.</p>
+      <label for="rawMessage">메시지</label>
+      <textarea id="rawMessage" rows="3" placeholder="예) Summarize how to update a payment method."></textarea>
+      <button id="rawBtn">모델 호출</button>
+      <pre id="rawAnswerBox">아직 호출 전입니다.</pre>
     </div>
 
     <div class="card">
       <h2>5) Chroma 컬렉션 확인</h2>
-      <p style="color:var(--muted);margin:0 0 8px;">List collections and preview documents (Chroma 서버가 켜져 있어야 합니다).</p>
-      <button id="listCollectionsBtn">List Collections</button>
-      <pre id="collectionsBox">No collections yet.</pre>
+      <p class="hint">컬렉션 목록/프리뷰로 스토어 상태를 살펴봅니다. Chroma 서버가 없으면 인메모리 결과가 비어있을 수 있습니다.</p>
+      <button id="listCollectionsBtn">컬렉션 목록 보기</button>
+      <pre id="collectionsBox">아직 조회 전입니다.</pre>
       <div class="row">
         <div>
-          <label for="previewCollection">Collection name</label>
+          <label for="previewCollection">컬렉션 이름</label>
           <input id="previewCollection" placeholder="devdocs-stripe-300">
         </div>
         <div>
@@ -147,8 +149,8 @@
           <input id="previewLimit" type="number" value="5" min="1" max="50">
         </div>
       </div>
-      <button id="previewBtn">Preview documents</button>
-      <pre id="previewBox">No preview yet.</pre>
+      <button id="previewBtn">문서 미리보기</button>
+      <pre id="previewBox">아직 미리보기 전입니다.</pre>
     </div>
   </div>
 
@@ -176,7 +178,7 @@
 
     ingestBtn.onclick = async () => {
       ingestBtn.disabled = true;
-      ingestBtn.textContent = 'Running...';
+      ingestBtn.textContent = '적재 중...';
       ingestResult.textContent = 'Ingesting...';
       try {
         const res = await fetch('/api/devdocs/ingest', { method: 'POST' });
@@ -186,18 +188,18 @@
         ingestResult.textContent = 'Error: ' + e;
       } finally {
         ingestBtn.disabled = false;
-        ingestBtn.textContent = 'Ingest now';
+        ingestBtn.textContent = '지금 적재';
       }
     };
 
     ragBtn.onclick = async () => {
       const q = ragQuestion.value.trim();
       if (!q) {
-        ragResult.textContent = 'Enter a question first.';
+        ragResult.textContent = '질문을 입력해주세요.';
         return;
       }
       ragBtn.disabled = true;
-      ragBtn.textContent = 'Running...';
+      ragBtn.textContent = '실행 중...';
       ragResult.textContent = 'Querying RAG...';
       try {
         const res = await fetch('/api/devdocs/query', {
@@ -215,18 +217,18 @@
         ragResult.textContent = 'Error: ' + e;
       } finally {
         ragBtn.disabled = false;
-        ragBtn.textContent = 'Run RAG';
+        ragBtn.textContent = 'RAG 실행';
       }
     };
 
     askBtn.onclick = async () => {
       const q = questionInput.value.trim();
       if (!q) {
-        answerBox.textContent = 'Enter a question first.';
+        answerBox.textContent = '질문을 입력해주세요.';
         return;
       }
       askBtn.disabled = true;
-      askBtn.textContent = 'Asking...';
+      askBtn.textContent = '요청 중...';
       answerBox.textContent = 'Waiting for response...';
       try {
         const res = await fetch('/api/agent/ask', {
@@ -240,18 +242,18 @@
         answerBox.textContent = 'Error: ' + e;
       } finally {
         askBtn.disabled = false;
-        askBtn.textContent = 'Send';
+        askBtn.textContent = '질문 보내기';
       }
     };
 
     rawBtn.onclick = async () => {
       const msg = rawMessage.value.trim();
       if (!msg) {
-        rawAnswerBox.textContent = 'Enter a message first.';
+        rawAnswerBox.textContent = '메시지를 입력해주세요.';
         return;
       }
       rawBtn.disabled = true;
-      rawBtn.textContent = 'Sending...';
+      rawBtn.textContent = '호출 중...';
       rawAnswerBox.textContent = 'Waiting for response...';
       try {
         const res = await fetch('/api/openai/chat', {
@@ -265,13 +267,13 @@
         rawAnswerBox.textContent = 'Error: ' + e;
       } finally {
         rawBtn.disabled = false;
-        rawBtn.textContent = 'Send to OpenAI';
+        rawBtn.textContent = '모델 호출';
       }
     };
 
     listCollectionsBtn.onclick = async () => {
       listCollectionsBtn.disabled = true;
-      listCollectionsBtn.textContent = 'Loading...';
+      listCollectionsBtn.textContent = '불러오는 중...';
       collectionsBox.textContent = 'Fetching collections...';
       try {
         const res = await fetch('/api/devdocs/collections');
@@ -281,7 +283,7 @@
         collectionsBox.textContent = 'Error: ' + e;
       } finally {
         listCollectionsBtn.disabled = false;
-        listCollectionsBtn.textContent = 'List Collections';
+        listCollectionsBtn.textContent = '컬렉션 목록 보기';
       }
     };
 
@@ -289,11 +291,11 @@
       const name = (previewCollection.value || '').trim();
       const limit = parseInt(previewLimit.value || '5', 10);
       if (!name) {
-        previewBox.textContent = 'Enter a collection name.';
+        previewBox.textContent = '컬렉션 이름을 입력해주세요.';
         return;
       }
       previewBtn.disabled = true;
-      previewBtn.textContent = 'Loading...';
+      previewBtn.textContent = '불러오는 중...';
       previewBox.textContent = 'Fetching preview...';
       try {
         const res = await fetch(`/api/devdocs/collections/${encodeURIComponent(name)}/preview?limit=${limit}`);
@@ -303,7 +305,7 @@
         previewBox.textContent = 'Error: ' + e;
       } finally {
         previewBtn.disabled = false;
-        previewBtn.textContent = 'Preview documents';
+        previewBtn.textContent = '문서 미리보기';
       }
     };
   </script>
