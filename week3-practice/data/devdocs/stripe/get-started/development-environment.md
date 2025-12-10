@@ -4,13 +4,13 @@ Get familiar with the Stripe CLI and our server-side SDKs.
 
 Check out our [no-code docs](https://docs.stripe.com/no-code.md), use a [prebuilt solution](https://stripe.com/partners/directory) from our partner directory, or hire a [Stripe-certified expert](https://stripe.com/partners/directory?t=Consulting).
 
-Stripe?™s server-side SDKs and command-line interface (CLI) allow you to interact with Stripe?™s REST APIs. Start with the Stripe CLI to streamline your development environment and make API calls.
+Stripe?ï¿½s server-side SDKs and command-line interface (CLI) allow you to interact with Stripe?ï¿½s REST APIs. Start with the Stripe CLI to streamline your development environment and make API calls.
 
 Use the SDKs to avoid writing boilerplate code. To start sending requests from your environment, choose a language to follow a quickstart guide.
 
 > #### Chrome extensions
 > 
-> We recommend you build your payment integration with Stripe (such as [Elements](https://docs.stripe.com/payments/elements.md) or [Checkout](https://docs.stripe.com/payments/checkout.md)) on your own website. Then, set up your Chrome extension to send users to this payment page when they?™re ready to complete a purchase.
+> We recommend you build your payment integration with Stripe (such as [Elements](https://docs.stripe.com/payments/elements.md) or [Checkout](https://docs.stripe.com/payments/checkout.md)) on your own website. Then, set up your Chrome extension to send users to this payment page when they?ï¿½re ready to complete a purchase.
 > 
 > This method is more secure and easier to maintain than trying to handle payments directly within the extension.
 
@@ -18,11 +18,11 @@ Use the SDKs to avoid writing boilerplate code. To start sending requests from y
 
 > This is a Ruby for when lang is ruby. View the full page at https://docs.stripe.com/get-started/development-environment?lang=ruby.
 
-In this quickstart, you install the [Stripe CLI](https://docs.stripe.com/stripe-cli.md)?”an essential tool that gets you command line access to your Stripe integration. You also install the [Stripe Ruby server-side SDK](https://github.com/stripe/stripe-ruby) to get access to Stripe APIs from applications written in Ruby.
+In this quickstart, you install the [Stripe CLI](https://docs.stripe.com/stripe-cli.md)?ï¿½an essential tool that gets you command line access to your Stripe integration. You also install the [Stripe Ruby server-side SDK](https://github.com/stripe/stripe-ruby) to get access to Stripe APIs from applications written in Ruby.
 
 ## What you learn
 
-In this quickstart, you?™ll learn:
+In this quickstart, you?ï¿½ll learn:
 
 - How to call Stripe APIs without writing a line of code
 - How to manage third-party dependencies using a bundler with RubyGems
@@ -55,7 +55,7 @@ brew install stripe-cli
 
 > The Debian build for the CLI is available on JFrog at https://packages.stripe.dev, which is not a domain owned by Stripe. When you visit this URL, it redirects you to the Jfrog artifactory list.
 
-> On April 5th, 2024, we changed Stripe CLI?™s GPG key to install the Stripe CLI through apt. If you configured the public key before April 5th, you?™ll encounter this error:
+> On April 5th, 2024, we changed Stripe CLI?ï¿½s GPG key to install the Stripe CLI through apt. If you configured the public key before April 5th, you?ï¿½ll encounter this error:
 > 
 > ```
 W: An error occurred during the signature verification. The repository is not updated and the previous index files will be used. GPG error: https://packages.stripe.dev/stripe-cli-debian-local stable InRelease: The following signatures were invalid: EXPKEYSIG DEEBD57F917C83E3 Stripe <security@stripe.com>
@@ -63,17 +63,17 @@ W: Failed to fetch https://packages.stripe.dev/stripe-cli-debian-local/dists/sta
 W: Some index files failed to download. They have been ignored, or old ones used instead
 ```
 > 
-> To resolve this error, refresh Stripe?™s GPG key by following [step 1](https://docs.stripe.com/get-started/development-environment.md#step_one).
+> To resolve this error, refresh Stripe?ï¿½s GPG key by following [step 1](https://docs.stripe.com/get-started/development-environment.md#step_one).
 
 To install the Stripe CLI on Debian and Ubuntu-based distributions:
 
-1. Add Stripe CLI?™s GPG key to the apt sources keyring:
+1. Add Stripe CLI?ï¿½s GPG key to the apt sources keyring:
 
 ```bash
 curl -s https://packages.stripe.dev/api/security/keypair/stripe-cli-gpg/public | gpg --dearmor | sudo tee /usr/share/keyrings/stripe.gpg
 ```
 
-1. Add CLI?™s apt repository to the apt sources list:
+1. Add CLI?ï¿½s apt repository to the apt sources list:
 
 ```bash
 echo "deb [signed-by=/usr/share/keyrings/stripe.gpg] https://packages.stripe.dev/stripe-cli-debian-local stable main" | sudo tee -a /etc/apt/sources.list.d/stripe.list
@@ -97,7 +97,7 @@ sudo apt install stripe
 
 To install the Stripe CLI on RPM-based distributions:
 
-1. Add CLI?™s yum repository to the yum sources list:
+1. Add CLI?ï¿½s yum repository to the yum sources list:
 
 ```bash
 echo -e "[Stripe]\nname=stripe\nbaseurl=https://packages.stripe.dev/stripe-cli-rpm-local/\nenabled=1\ngpgcheck=0" >> /etc/yum.repos.d/stripe.repo
@@ -176,7 +176,7 @@ Press Enter to open the browser or visit https://dashboard.stripe.com/stripecli/
 
 ### Confirm setup
 
-Now that you?™ve installed the CLI, you can make a single API request to [Create a product](https://docs.stripe.com/api/products/create.md).
+Now that you?ï¿½ve installed the CLI, you can make a single API request to [Create a product](https://docs.stripe.com/api/products/create.md).
 
 #### bash
 
@@ -300,7 +300,7 @@ bundle install
 
 ### Installation alternatives
 
-**Add as dependency**?”Add the latest version of the library as a gem dependency:
+**Add as dependency**?ï¿½Add the latest version of the library as a gem dependency:
 
 ```ruby
 source 'https://rubygems.org'
@@ -309,7 +309,7 @@ gem 'rails'
 gem 'stripe'
 ```
 
-**Global installation**?”Install the library globally with [RubyGems](https://rubygems.org/):
+**Global installation**?ï¿½Install the library globally with [RubyGems](https://rubygems.org/):
 
 ```bash
 gem install stripe
@@ -323,7 +323,7 @@ gem build stripe.gemspec
 
 ## Run your first SDK request
 
-Now that you have the Ruby SDK installed, you can create a subscription [Product](https://docs.stripe.com/api/products/create.md) and attach a [Price](https://docs.stripe.com/api/prices/create.md) with a couple API requests. We?™re using the product identifier returned in the response to create the price in this example.
+Now that you have the Ruby SDK installed, you can create a subscription [Product](https://docs.stripe.com/api/products/create.md) and attach a [Price](https://docs.stripe.com/api/prices/create.md) with a couple API requests. We?ï¿½re using the product identifier returned in the response to create the price in this example.
 
 > This sample uses the default keys of your Stripe user [account](https://docs.stripe.com/get-started/account/activate.md) for your *sandbox* (A sandbox is an isolated test environment that allows you to test Stripe functionality in your account without affecting your live integration. Use sandboxes to safely experiment with new features and changes) environment. Only you can see these values.
 
@@ -380,11 +380,11 @@ This wraps up the quickstart. See the links below for a few different ways to pr
 
 > This is a Python for when lang is python. View the full page at https://docs.stripe.com/get-started/development-environment?lang=python.
 
-In this quickstart, you install the [Stripe CLI](https://docs.stripe.com/stripe-cli.md)?”an essential tool that gets you command line access to your Stripe integration. You also install the [Stripe Python server-side SDK](https://github.com/stripe/stripe-python) to get access to Stripe APIs from applications written in Python.
+In this quickstart, you install the [Stripe CLI](https://docs.stripe.com/stripe-cli.md)?ï¿½an essential tool that gets you command line access to your Stripe integration. You also install the [Stripe Python server-side SDK](https://github.com/stripe/stripe-python) to get access to Stripe APIs from applications written in Python.
 
 ## What you learn
 
-In this quickstart, you?™ll learn:
+In this quickstart, you?ï¿½ll learn:
 
 - How to call Stripe APIs without writing a line of code
 - How to manage third-party dependencies using a virtual environment and the pip package manager
@@ -419,7 +419,7 @@ brew install stripe-cli
 
 > The Debian build for the CLI is available on JFrog at https://packages.stripe.dev, which is not a domain owned by Stripe. When you visit this URL, it redirects you to the Jfrog artifactory list.
 
-> On April 5th, 2024, we changed Stripe CLI?™s GPG key to install the Stripe CLI through apt. If you configured the public key before April 5th, you?™ll encounter this error:
+> On April 5th, 2024, we changed Stripe CLI?ï¿½s GPG key to install the Stripe CLI through apt. If you configured the public key before April 5th, you?ï¿½ll encounter this error:
 > 
 > ```
 W: An error occurred during the signature verification. The repository is not updated and the previous index files will be used. GPG error: https://packages.stripe.dev/stripe-cli-debian-local stable InRelease: The following signatures were invalid: EXPKEYSIG DEEBD57F917C83E3 Stripe <security@stripe.com>
@@ -427,17 +427,17 @@ W: Failed to fetch https://packages.stripe.dev/stripe-cli-debian-local/dists/sta
 W: Some index files failed to download. They have been ignored, or old ones used instead
 ```
 > 
-> To resolve this error, refresh Stripe?™s GPG key by following [step 1](https://docs.stripe.com/get-started/development-environment.md#step_one).
+> To resolve this error, refresh Stripe?ï¿½s GPG key by following [step 1](https://docs.stripe.com/get-started/development-environment.md#step_one).
 
 To install the Stripe CLI on Debian and Ubuntu-based distributions:
 
-1. Add Stripe CLI?™s GPG key to the apt sources keyring:
+1. Add Stripe CLI?ï¿½s GPG key to the apt sources keyring:
 
 ```bash
 curl -s https://packages.stripe.dev/api/security/keypair/stripe-cli-gpg/public | gpg --dearmor | sudo tee /usr/share/keyrings/stripe.gpg
 ```
 
-1. Add CLI?™s apt repository to the apt sources list:
+1. Add CLI?ï¿½s apt repository to the apt sources list:
 
 ```bash
 echo "deb [signed-by=/usr/share/keyrings/stripe.gpg] https://packages.stripe.dev/stripe-cli-debian-local stable main" | sudo tee -a /etc/apt/sources.list.d/stripe.list
@@ -461,7 +461,7 @@ sudo apt install stripe
 
 To install the Stripe CLI on RPM-based distributions:
 
-1. Add CLI?™s yum repository to the yum sources list:
+1. Add CLI?ï¿½s yum repository to the yum sources list:
 
 ```bash
 echo -e "[Stripe]\nname=stripe\nbaseurl=https://packages.stripe.dev/stripe-cli-rpm-local/\nenabled=1\ngpgcheck=0" >> /etc/yum.repos.d/stripe.repo
@@ -540,7 +540,7 @@ Press Enter to open the browser or visit https://dashboard.stripe.com/stripecli/
 
 ### Confirm setup
 
-Now that you?™ve installed the CLI, you can make a single API request to [Create a product](https://docs.stripe.com/api/products/create.md).
+Now that you?ï¿½ve installed the CLI, you can make a single API request to [Create a product](https://docs.stripe.com/api/products/create.md).
 
 #### bash
 
@@ -678,7 +678,7 @@ python3 setup.py install
 
 ## Run your first SDK request
 
-Now that you have the Python SDK installed, you can create a subscription [Product](https://docs.stripe.com/api/products/create.md) and attach a [Price](https://docs.stripe.com/api/prices/create.md) with a couple API requests. We?™re using the product identifier returned in the response to create the price in this example.
+Now that you have the Python SDK installed, you can create a subscription [Product](https://docs.stripe.com/api/products/create.md) and attach a [Price](https://docs.stripe.com/api/prices/create.md) with a couple API requests. We?ï¿½re using the product identifier returned in the response to create the price in this example.
 
 > This sample uses the default keys of your Stripe user [account](https://docs.stripe.com/get-started/account/activate.md) for your *sandbox* (A sandbox is an isolated test environment that allows you to test Stripe functionality in your account without affecting your live integration. Use sandboxes to safely experiment with new features and changes) environment. Only you can see these values.
 
@@ -735,11 +735,11 @@ This wraps up the quickstart. See the links below for a few different ways to pr
 
 > This is a Go for when lang is go. View the full page at https://docs.stripe.com/get-started/development-environment?lang=go.
 
-In this quickstart, you install the [Stripe CLI](https://docs.stripe.com/stripe-cli.md)?”an essential tool that gets you command line access to your Stripe integration. You also install the [Stripe Go server-side SDK](https://github.com/stripe/stripe-go) to get access to Stripe APIs from applications written in Go.
+In this quickstart, you install the [Stripe CLI](https://docs.stripe.com/stripe-cli.md)?ï¿½an essential tool that gets you command line access to your Stripe integration. You also install the [Stripe Go server-side SDK](https://github.com/stripe/stripe-go) to get access to Stripe APIs from applications written in Go.
 
 ## What you learn
 
-In this quickstart, you?™ll learn:
+In this quickstart, you?ï¿½ll learn:
 
 - How to call Stripe APIs without writing a line of code
 - How to manage third-party dependencies using Go modules
@@ -774,7 +774,7 @@ brew install stripe-cli
 
 > The Debian build for the CLI is available on JFrog at https://packages.stripe.dev, which is not a domain owned by Stripe. When you visit this URL, it redirects you to the Jfrog artifactory list.
 
-> On April 5th, 2024, we changed Stripe CLI?™s GPG key to install the Stripe CLI through apt. If you configured the public key before April 5th, you?™ll encounter this error:
+> On April 5th, 2024, we changed Stripe CLI?ï¿½s GPG key to install the Stripe CLI through apt. If you configured the public key before April 5th, you?ï¿½ll encounter this error:
 > 
 > ```
 W: An error occurred during the signature verification. The repository is not updated and the previous index files will be used. GPG error: https://packages.stripe.dev/stripe-cli-debian-local stable InRelease: The following signatures were invalid: EXPKEYSIG DEEBD57F917C83E3 Stripe <security@stripe.com>
@@ -782,17 +782,17 @@ W: Failed to fetch https://packages.stripe.dev/stripe-cli-debian-local/dists/sta
 W: Some index files failed to download. They have been ignored, or old ones used instead
 ```
 > 
-> To resolve this error, refresh Stripe?™s GPG key by following [step 1](https://docs.stripe.com/get-started/development-environment.md#step_one).
+> To resolve this error, refresh Stripe?ï¿½s GPG key by following [step 1](https://docs.stripe.com/get-started/development-environment.md#step_one).
 
 To install the Stripe CLI on Debian and Ubuntu-based distributions:
 
-1. Add Stripe CLI?™s GPG key to the apt sources keyring:
+1. Add Stripe CLI?ï¿½s GPG key to the apt sources keyring:
 
 ```bash
 curl -s https://packages.stripe.dev/api/security/keypair/stripe-cli-gpg/public | gpg --dearmor | sudo tee /usr/share/keyrings/stripe.gpg
 ```
 
-1. Add CLI?™s apt repository to the apt sources list:
+1. Add CLI?ï¿½s apt repository to the apt sources list:
 
 ```bash
 echo "deb [signed-by=/usr/share/keyrings/stripe.gpg] https://packages.stripe.dev/stripe-cli-debian-local stable main" | sudo tee -a /etc/apt/sources.list.d/stripe.list
@@ -816,7 +816,7 @@ sudo apt install stripe
 
 To install the Stripe CLI on RPM-based distributions:
 
-1. Add CLI?™s yum repository to the yum sources list:
+1. Add CLI?ï¿½s yum repository to the yum sources list:
 
 ```bash
 echo -e "[Stripe]\nname=stripe\nbaseurl=https://packages.stripe.dev/stripe-cli-rpm-local/\nenabled=1\ngpgcheck=0" >> /etc/yum.repos.d/stripe.repo
@@ -895,7 +895,7 @@ Press Enter to open the browser or visit https://dashboard.stripe.com/stripecli/
 
 ### Confirm setup
 
-Now that you?™ve installed the CLI, you can make a single API request to [Create a product](https://docs.stripe.com/api/products/create.md).
+Now that you?ï¿½ve installed the CLI, you can make a single API request to [Create a product](https://docs.stripe.com/api/products/create.md).
 
 #### bash
 
@@ -983,7 +983,7 @@ We recommend managing third-party dependencies using [Go modules](https://go.dev
 
 ### Initialize Go
 
-If you?™re starting from scratch in a new directory, you first need to create a `go.mod` file for tracking dependencies. For example:
+If you?ï¿½re starting from scratch in a new directory, you first need to create a `go.mod` file for tracking dependencies. For example:
 
 #### Initialize Go
 
@@ -1003,7 +1003,7 @@ Install the library with [Go modules](https://go.dev/blog/using-go-modules), a p
 go get github.com/stripe/stripe-go/v83
 ```
 
-After you install the library with Go modules to a *new* project, the library is automatically added as a dependency in your project?™s go.mod file. For example:
+After you install the library with Go modules to a *new* project, the library is automatically added as a dependency in your project?ï¿½s go.mod file. For example:
 
 ```go.mod
 module stripe-example
@@ -1015,7 +1015,7 @@ require github.com/stripe/stripe-go/v83 83.0.0 // indirect
 
 ### Synchronize dependencies
 
-To keep your managed dependency set tidy for an *existing* project, run the following command to [sync your code?™s dependencies](https://go.dev/doc/modules/managing-dependencies).
+To keep your managed dependency set tidy for an *existing* project, run the following command to [sync your code?ï¿½s dependencies](https://go.dev/doc/modules/managing-dependencies).
 
 ```bash
 go mod tidy
@@ -1023,7 +1023,7 @@ go mod tidy
 
 ## Run your first SDK request
 
-Now that you have the Go SDK installed, you can create a subscription [Product](https://docs.stripe.com/api/products/create.md) and attach a [Price](https://docs.stripe.com/api/prices/create.md) with a couple API requests. We?™re using the product identifier returned in the response to create the price in this example.
+Now that you have the Go SDK installed, you can create a subscription [Product](https://docs.stripe.com/api/products/create.md) and attach a [Price](https://docs.stripe.com/api/prices/create.md) with a couple API requests. We?ï¿½re using the product identifier returned in the response to create the price in this example.
 
 > This sample uses the default keys of your Stripe user [account](https://docs.stripe.com/get-started/account/activate.md) for your *sandbox* (A sandbox is an isolated test environment that allows you to test Stripe functionality in your account without affecting your live integration. Use sandboxes to safely experiment with new features and changes) environment. Only you can see these values.
 
@@ -1093,11 +1093,11 @@ This wraps up the quickstart. See the links below for a few different ways to pr
 
 > This is a Java for when lang is java. View the full page at https://docs.stripe.com/get-started/development-environment?lang=java.
 
-In this quickstart, you install the [Stripe CLI](https://docs.stripe.com/stripe-cli.md)?”an essential tool that gets you command line access to your Stripe integration. You also install the [Stripe Java server-side SDK](https://github.com/stripe/stripe-java) to get access to Stripe APIs from applications written in Java.
+In this quickstart, you install the [Stripe CLI](https://docs.stripe.com/stripe-cli.md)?ï¿½an essential tool that gets you command line access to your Stripe integration. You also install the [Stripe Java server-side SDK](https://github.com/stripe/stripe-java) to get access to Stripe APIs from applications written in Java.
 
 ## What you learn
 
-In this quickstart, you?™ll learn:
+In this quickstart, you?ï¿½ll learn:
 
 - How to call Stripe APIs without writing a line of code
 - How to manage third-party dependencies using Maven or Gradle
@@ -1132,7 +1132,7 @@ brew install stripe-cli
 
 > The Debian build for the CLI is available on JFrog at https://packages.stripe.dev, which is not a domain owned by Stripe. When you visit this URL, it redirects you to the Jfrog artifactory list.
 
-> On April 5th, 2024, we changed Stripe CLI?™s GPG key to install the Stripe CLI through apt. If you configured the public key before April 5th, you?™ll encounter this error:
+> On April 5th, 2024, we changed Stripe CLI?ï¿½s GPG key to install the Stripe CLI through apt. If you configured the public key before April 5th, you?ï¿½ll encounter this error:
 > 
 > ```
 W: An error occurred during the signature verification. The repository is not updated and the previous index files will be used. GPG error: https://packages.stripe.dev/stripe-cli-debian-local stable InRelease: The following signatures were invalid: EXPKEYSIG DEEBD57F917C83E3 Stripe <security@stripe.com>
@@ -1140,17 +1140,17 @@ W: Failed to fetch https://packages.stripe.dev/stripe-cli-debian-local/dists/sta
 W: Some index files failed to download. They have been ignored, or old ones used instead
 ```
 > 
-> To resolve this error, refresh Stripe?™s GPG key by following [step 1](https://docs.stripe.com/get-started/development-environment.md#step_one).
+> To resolve this error, refresh Stripe?ï¿½s GPG key by following [step 1](https://docs.stripe.com/get-started/development-environment.md#step_one).
 
 To install the Stripe CLI on Debian and Ubuntu-based distributions:
 
-1. Add Stripe CLI?™s GPG key to the apt sources keyring:
+1. Add Stripe CLI?ï¿½s GPG key to the apt sources keyring:
 
 ```bash
 curl -s https://packages.stripe.dev/api/security/keypair/stripe-cli-gpg/public | gpg --dearmor | sudo tee /usr/share/keyrings/stripe.gpg
 ```
 
-1. Add CLI?™s apt repository to the apt sources list:
+1. Add CLI?ï¿½s apt repository to the apt sources list:
 
 ```bash
 echo "deb [signed-by=/usr/share/keyrings/stripe.gpg] https://packages.stripe.dev/stripe-cli-debian-local stable main" | sudo tee -a /etc/apt/sources.list.d/stripe.list
@@ -1174,7 +1174,7 @@ sudo apt install stripe
 
 To install the Stripe CLI on RPM-based distributions:
 
-1. Add CLI?™s yum repository to the yum sources list:
+1. Add CLI?ï¿½s yum repository to the yum sources list:
 
 ```bash
 echo -e "[Stripe]\nname=stripe\nbaseurl=https://packages.stripe.dev/stripe-cli-rpm-local/\nenabled=1\ngpgcheck=0" >> /etc/yum.repos.d/stripe.repo
@@ -1253,7 +1253,7 @@ Press Enter to open the browser or visit https://dashboard.stripe.com/stripecli/
 
 ### Confirm setup
 
-Now that you?™ve installed the CLI, you can make a single API request to [Create a product](https://docs.stripe.com/api/products/create.md).
+Now that you?ï¿½ve installed the CLI, you can make a single API request to [Create a product](https://docs.stripe.com/api/products/create.md).
 
 #### bash
 
@@ -1356,7 +1356,7 @@ java -version
 
 ### Install the library
 
-- With **Maven**, place the following in your project?™s pom.xml file:
+- With **Maven**, place the following in your project?ï¿½s pom.xml file:
 
 ```xml
 <dependency>
@@ -1374,11 +1374,11 @@ implementation 'com.stripe:stripe-java:30.0.0'
 
 ### Installation alternatives
 
-**Manual installation**?”You can manually install stripe-java with the following JARs: [Download the Stripe JAR (.jar)](https://search.maven.org/remote_content?g=com.stripe&a=stripe-java&v=LATEST).
+**Manual installation**?ï¿½You can manually install stripe-java with the following JARs: [Download the Stripe JAR (.jar)](https://search.maven.org/remote_content?g=com.stripe&a=stripe-java&v=LATEST).
 
 [Download the Gson JAR (.jar)](https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.9/gson-2.8.9.jar) for [Google Gson](https://github.com/google/gson).
 
-**Proguard**?”If you?™re using ProGuard, be sure to exclude the library by adding the following to your `proguard.cfg` file:
+**Proguard**?ï¿½If you?ï¿½re using ProGuard, be sure to exclude the library by adding the following to your `proguard.cfg` file:
 
 ```proguard
 -keep class com.stripe.** { *; }
@@ -1386,7 +1386,7 @@ implementation 'com.stripe:stripe-java:30.0.0'
 
 ## Run your first SDK request
 
-Now that you have the Java SDK installed, you can create a subscription [Product](https://docs.stripe.com/api/products/create.md) and attach a [Price](https://docs.stripe.com/api/prices/create.md) with a couple API requests. We?™re using the product identifier returned in the response to create the price in this example.
+Now that you have the Java SDK installed, you can create a subscription [Product](https://docs.stripe.com/api/products/create.md) and attach a [Price](https://docs.stripe.com/api/prices/create.md) with a couple API requests. We?ï¿½re using the product identifier returned in the response to create the price in this example.
 
 > This sample uses the default keys of your Stripe user [account](https://docs.stripe.com/get-started/account/activate.md) for your *sandbox* (A sandbox is an isolated test environment that allows you to test Stripe functionality in your account without affecting your live integration. Use sandboxes to safely experiment with new features and changes) environment. Only you can see these values.
 
@@ -1457,11 +1457,11 @@ This wraps up the quickstart. See the links below for a few different ways to pr
 
 > This is a Node.js for when lang is node. View the full page at https://docs.stripe.com/get-started/development-environment?lang=node.
 
-In this quickstart, you install the [Stripe CLI](https://docs.stripe.com/stripe-cli.md)?”an essential tool that gets you command line access to your Stripe integration. You also install the [Stripe Node.js server-side SDK](https://github.com/stripe/stripe-node) to get access to Stripe APIs from applications written in Node.js.
+In this quickstart, you install the [Stripe CLI](https://docs.stripe.com/stripe-cli.md)?ï¿½an essential tool that gets you command line access to your Stripe integration. You also install the [Stripe Node.js server-side SDK](https://github.com/stripe/stripe-node) to get access to Stripe APIs from applications written in Node.js.
 
 ## What you learn
 
-In this quickstart, you?™ll learn:
+In this quickstart, you?ï¿½ll learn:
 
 - How to call Stripe APIs without writing a line of code
 - How to manage third-party dependencies using the npm or yarn package manager
@@ -1496,7 +1496,7 @@ brew install stripe-cli
 
 > The Debian build for the CLI is available on JFrog at https://packages.stripe.dev, which is not a domain owned by Stripe. When you visit this URL, it redirects you to the Jfrog artifactory list.
 
-> On April 5th, 2024, we changed Stripe CLI?™s GPG key to install the Stripe CLI through apt. If you configured the public key before April 5th, you?™ll encounter this error:
+> On April 5th, 2024, we changed Stripe CLI?ï¿½s GPG key to install the Stripe CLI through apt. If you configured the public key before April 5th, you?ï¿½ll encounter this error:
 > 
 > ```
 W: An error occurred during the signature verification. The repository is not updated and the previous index files will be used. GPG error: https://packages.stripe.dev/stripe-cli-debian-local stable InRelease: The following signatures were invalid: EXPKEYSIG DEEBD57F917C83E3 Stripe <security@stripe.com>
@@ -1504,17 +1504,17 @@ W: Failed to fetch https://packages.stripe.dev/stripe-cli-debian-local/dists/sta
 W: Some index files failed to download. They have been ignored, or old ones used instead
 ```
 > 
-> To resolve this error, refresh Stripe?™s GPG key by following [step 1](https://docs.stripe.com/get-started/development-environment.md#step_one).
+> To resolve this error, refresh Stripe?ï¿½s GPG key by following [step 1](https://docs.stripe.com/get-started/development-environment.md#step_one).
 
 To install the Stripe CLI on Debian and Ubuntu-based distributions:
 
-1. Add Stripe CLI?™s GPG key to the apt sources keyring:
+1. Add Stripe CLI?ï¿½s GPG key to the apt sources keyring:
 
 ```bash
 curl -s https://packages.stripe.dev/api/security/keypair/stripe-cli-gpg/public | gpg --dearmor | sudo tee /usr/share/keyrings/stripe.gpg
 ```
 
-1. Add CLI?™s apt repository to the apt sources list:
+1. Add CLI?ï¿½s apt repository to the apt sources list:
 
 ```bash
 echo "deb [signed-by=/usr/share/keyrings/stripe.gpg] https://packages.stripe.dev/stripe-cli-debian-local stable main" | sudo tee -a /etc/apt/sources.list.d/stripe.list
@@ -1538,7 +1538,7 @@ sudo apt install stripe
 
 To install the Stripe CLI on RPM-based distributions:
 
-1. Add CLI?™s yum repository to the yum sources list:
+1. Add CLI?ï¿½s yum repository to the yum sources list:
 
 ```bash
 echo -e "[Stripe]\nname=stripe\nbaseurl=https://packages.stripe.dev/stripe-cli-rpm-local/\nenabled=1\ngpgcheck=0" >> /etc/yum.repos.d/stripe.repo
@@ -1617,7 +1617,7 @@ Press Enter to open the browser or visit https://dashboard.stripe.com/stripecli/
 
 ### Confirm setup
 
-Now that you?™ve installed the CLI, you can make a single API request to [Create a product](https://docs.stripe.com/api/products/create.md).
+Now that you?ï¿½ve installed the CLI, you can make a single API request to [Create a product](https://docs.stripe.com/api/products/create.md).
 
 #### bash
 
@@ -1725,7 +1725,7 @@ Install the library with [npm](https://www.npmjs.com/package/node), a package ma
 npm install stripe --save
 ```
 
-After you install the library with npm, the library is automatically added as a dependency in your project?™s package.json file. For example:
+After you install the library with npm, the library is automatically added as a dependency in your project?ï¿½s package.json file. For example:
 
 ```json
 {
@@ -1747,7 +1747,7 @@ After you install the library with npm, the library is automatically added as a 
 
 ### Installation alternatives
 
-**Yarn**?”You can install the library with [yarn](https://yarnpkg.com/), another package manager for Node:
+**Yarn**?ï¿½You can install the library with [yarn](https://yarnpkg.com/), another package manager for Node:
 
 ```bash
 yarn add stripe
@@ -1755,7 +1755,7 @@ yarn add stripe
 
 ## Run your first SDK request
 
-Now that you have the Node.js SDK installed, you can create a subscription [Product](https://docs.stripe.com/api/products/create.md) and attach a [Price](https://docs.stripe.com/api/prices/create.md) with a couple API requests. The Node.js SDK returns [promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) which can be used as chainable callbacks. To demonstrate, we?™re passing the product identifier returned in the Product response to create a Price in this example.
+Now that you have the Node.js SDK installed, you can create a subscription [Product](https://docs.stripe.com/api/products/create.md) and attach a [Price](https://docs.stripe.com/api/prices/create.md) with a couple API requests. The Node.js SDK returns [promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) which can be used as chainable callbacks. To demonstrate, we?ï¿½re passing the product identifier returned in the Product response to create a Price in this example.
 
 > This sample uses the default keys of your Stripe user [account](https://docs.stripe.com/get-started/account/activate.md) for your *sandbox* (A sandbox is an isolated test environment that allows you to test Stripe functionality in your account without affecting your live integration. Use sandboxes to safely experiment with new features and changes) environment. Only you can see these values.
 
@@ -1812,11 +1812,11 @@ This wraps up the quickstart. See the links below for a few different ways to pr
 
 > This is a PHP for when lang is php. View the full page at https://docs.stripe.com/get-started/development-environment?lang=php.
 
-In this quickstart, you install the [Stripe CLI](https://docs.stripe.com/stripe-cli.md)?”an essential tool that gets you command line access to your Stripe integration. You also install the [Stripe PHP server-side SDK](https://github.com/stripe/stripe-php) to get access to Stripe APIs from applications written in PHP.
+In this quickstart, you install the [Stripe CLI](https://docs.stripe.com/stripe-cli.md)?ï¿½an essential tool that gets you command line access to your Stripe integration. You also install the [Stripe PHP server-side SDK](https://github.com/stripe/stripe-php) to get access to Stripe APIs from applications written in PHP.
 
 ## What you learn
 
-In this quickstart, you?™ll learn:
+In this quickstart, you?ï¿½ll learn:
 
 - How to call Stripe APIs without writing a line of code
 - How to manage third-party dependencies using Composer
@@ -1851,7 +1851,7 @@ brew install stripe-cli
 
 > The Debian build for the CLI is available on JFrog at https://packages.stripe.dev, which is not a domain owned by Stripe. When you visit this URL, it redirects you to the Jfrog artifactory list.
 
-> On April 5th, 2024, we changed Stripe CLI?™s GPG key to install the Stripe CLI through apt. If you configured the public key before April 5th, you?™ll encounter this error:
+> On April 5th, 2024, we changed Stripe CLI?ï¿½s GPG key to install the Stripe CLI through apt. If you configured the public key before April 5th, you?ï¿½ll encounter this error:
 > 
 > ```
 W: An error occurred during the signature verification. The repository is not updated and the previous index files will be used. GPG error: https://packages.stripe.dev/stripe-cli-debian-local stable InRelease: The following signatures were invalid: EXPKEYSIG DEEBD57F917C83E3 Stripe <security@stripe.com>
@@ -1859,17 +1859,17 @@ W: Failed to fetch https://packages.stripe.dev/stripe-cli-debian-local/dists/sta
 W: Some index files failed to download. They have been ignored, or old ones used instead
 ```
 > 
-> To resolve this error, refresh Stripe?™s GPG key by following [step 1](https://docs.stripe.com/get-started/development-environment.md#step_one).
+> To resolve this error, refresh Stripe?ï¿½s GPG key by following [step 1](https://docs.stripe.com/get-started/development-environment.md#step_one).
 
 To install the Stripe CLI on Debian and Ubuntu-based distributions:
 
-1. Add Stripe CLI?™s GPG key to the apt sources keyring:
+1. Add Stripe CLI?ï¿½s GPG key to the apt sources keyring:
 
 ```bash
 curl -s https://packages.stripe.dev/api/security/keypair/stripe-cli-gpg/public | gpg --dearmor | sudo tee /usr/share/keyrings/stripe.gpg
 ```
 
-1. Add CLI?™s apt repository to the apt sources list:
+1. Add CLI?ï¿½s apt repository to the apt sources list:
 
 ```bash
 echo "deb [signed-by=/usr/share/keyrings/stripe.gpg] https://packages.stripe.dev/stripe-cli-debian-local stable main" | sudo tee -a /etc/apt/sources.list.d/stripe.list
@@ -1893,7 +1893,7 @@ sudo apt install stripe
 
 To install the Stripe CLI on RPM-based distributions:
 
-1. Add CLI?™s yum repository to the yum sources list:
+1. Add CLI?ï¿½s yum repository to the yum sources list:
 
 ```bash
 echo -e "[Stripe]\nname=stripe\nbaseurl=https://packages.stripe.dev/stripe-cli-rpm-local/\nenabled=1\ngpgcheck=0" >> /etc/yum.repos.d/stripe.repo
@@ -1972,7 +1972,7 @@ Press Enter to open the browser or visit https://dashboard.stripe.com/stripecli/
 
 ### Confirm setup
 
-Now that you?™ve installed the CLI, you can make a single API request to [Create a product](https://docs.stripe.com/api/products/create.md).
+Now that you?ï¿½ve installed the CLI, you can make a single API request to [Create a product](https://docs.stripe.com/api/products/create.md).
 
 #### bash
 
@@ -2080,7 +2080,7 @@ Install the library with [Composer](http://getcomposer.org/), a package manager 
 composer require stripe/stripe-php
 ```
 
-After you install the library with Composer, it?™s automatically added as a dependency in your project?™s composer.json file. For example:
+After you install the library with Composer, it?ï¿½s automatically added as a dependency in your project?ï¿½s composer.json file. For example:
 
 ```json
 {
@@ -2090,7 +2090,7 @@ After you install the library with Composer, it?™s automatically added as a depe
 }
 ```
 
-To use the bindings, use Composer?™s [autoload](https://getcomposer.org/doc/01-basic-usage.md#autoloading). For example:
+To use the bindings, use Composer?ï¿½s [autoload](https://getcomposer.org/doc/01-basic-usage.md#autoloading). For example:
 
 ```php
 require_once('vendor/autoload.php');
@@ -2110,7 +2110,7 @@ Then, add the following extensions: [cURL](https://secure.php.net/manual/en/book
 
 ## Run your first SDK request
 
-Now that you have the PHP SDK installed, you can create a subscription [Product](https://docs.stripe.com/api/products/create.md) and attach a [Price](https://docs.stripe.com/api/prices/create.md) with a couple API requests. We?™re using the product identifier returned in the response to create the price in this example.
+Now that you have the PHP SDK installed, you can create a subscription [Product](https://docs.stripe.com/api/products/create.md) and attach a [Price](https://docs.stripe.com/api/prices/create.md) with a couple API requests. We?ï¿½re using the product identifier returned in the response to create the price in this example.
 
 > This sample uses the default keys of your Stripe user [account](https://docs.stripe.com/get-started/account/activate.md) for your *sandbox* (A sandbox is an isolated test environment that allows you to test Stripe functionality in your account without affecting your live integration. Use sandboxes to safely experiment with new features and changes) environment. Only you can see these values.
 
@@ -2170,11 +2170,11 @@ This wraps up the quickstart. See the links below for a few different ways to pr
 
 > This is a .NET for when lang is dotnet. View the full page at https://docs.stripe.com/get-started/development-environment?lang=dotnet.
 
-In this quickstart, you install the [Stripe CLI](https://docs.stripe.com/stripe-cli.md)?”an essential tool that gets you command line access to your Stripe integration. You also install the [Stripe .NET server-side SDK](https://github.com/stripe/stripe-dotnet) to get access to Stripe APIs from applications written in C#.
+In this quickstart, you install the [Stripe CLI](https://docs.stripe.com/stripe-cli.md)?ï¿½an essential tool that gets you command line access to your Stripe integration. You also install the [Stripe .NET server-side SDK](https://github.com/stripe/stripe-dotnet) to get access to Stripe APIs from applications written in C#.
 
 ## What you learn
 
-In this quickstart, you?™ll learn:
+In this quickstart, you?ï¿½ll learn:
 
 - How to call Stripe APIs without writing a line of code
 - How to manage third-party dependencies using the .NET Core CLI, NuGet CLI or the Package Manager Console
@@ -2209,7 +2209,7 @@ brew install stripe-cli
 
 > The Debian build for the CLI is available on JFrog at https://packages.stripe.dev, which is not a domain owned by Stripe. When you visit this URL, it redirects you to the Jfrog artifactory list.
 
-> On April 5th, 2024, we changed Stripe CLI?™s GPG key to install the Stripe CLI through apt. If you configured the public key before April 5th, you?™ll encounter this error:
+> On April 5th, 2024, we changed Stripe CLI?ï¿½s GPG key to install the Stripe CLI through apt. If you configured the public key before April 5th, you?ï¿½ll encounter this error:
 > 
 > ```
 W: An error occurred during the signature verification. The repository is not updated and the previous index files will be used. GPG error: https://packages.stripe.dev/stripe-cli-debian-local stable InRelease: The following signatures were invalid: EXPKEYSIG DEEBD57F917C83E3 Stripe <security@stripe.com>
@@ -2217,17 +2217,17 @@ W: Failed to fetch https://packages.stripe.dev/stripe-cli-debian-local/dists/sta
 W: Some index files failed to download. They have been ignored, or old ones used instead
 ```
 > 
-> To resolve this error, refresh Stripe?™s GPG key by following [step 1](https://docs.stripe.com/get-started/development-environment.md#step_one).
+> To resolve this error, refresh Stripe?ï¿½s GPG key by following [step 1](https://docs.stripe.com/get-started/development-environment.md#step_one).
 
 To install the Stripe CLI on Debian and Ubuntu-based distributions:
 
-1. Add Stripe CLI?™s GPG key to the apt sources keyring:
+1. Add Stripe CLI?ï¿½s GPG key to the apt sources keyring:
 
 ```bash
 curl -s https://packages.stripe.dev/api/security/keypair/stripe-cli-gpg/public | gpg --dearmor | sudo tee /usr/share/keyrings/stripe.gpg
 ```
 
-1. Add CLI?™s apt repository to the apt sources list:
+1. Add CLI?ï¿½s apt repository to the apt sources list:
 
 ```bash
 echo "deb [signed-by=/usr/share/keyrings/stripe.gpg] https://packages.stripe.dev/stripe-cli-debian-local stable main" | sudo tee -a /etc/apt/sources.list.d/stripe.list
@@ -2251,7 +2251,7 @@ sudo apt install stripe
 
 To install the Stripe CLI on RPM-based distributions:
 
-1. Add CLI?™s yum repository to the yum sources list:
+1. Add CLI?ï¿½s yum repository to the yum sources list:
 
 ```bash
 echo -e "[Stripe]\nname=stripe\nbaseurl=https://packages.stripe.dev/stripe-cli-rpm-local/\nenabled=1\ngpgcheck=0" >> /etc/yum.repos.d/stripe.repo
@@ -2330,7 +2330,7 @@ Press Enter to open the browser or visit https://dashboard.stripe.com/stripecli/
 
 ### Confirm setup
 
-Now that you?™ve installed the CLI, you can make a single API request to [Create a product](https://docs.stripe.com/api/products/create.md).
+Now that you?ï¿½ve installed the CLI, you can make a single API request to [Create a product](https://docs.stripe.com/api/products/create.md).
 
 #### bash
 
@@ -2457,23 +2457,23 @@ After you install the library with the CLI, the library is automatically added a
 
 ### Installation alternatives
 
-**NuGet Command Line Interface (CLI)**?”You can use the [NuGet CLI](https://docs.microsoft.com/en-us/nuget/tools/nuget-exe-cli-reference) to install the library:
+**NuGet Command Line Interface (CLI)**?ï¿½You can use the [NuGet CLI](https://docs.microsoft.com/en-us/nuget/tools/nuget-exe-cli-reference) to install the library:
 
 ```bash
 nuget install Stripe.net
 ```
 
-**Package Manager Console (PowerShell)**?”If you?™re using the [Package Manager Console (PowerShell)](https://docs.microsoft.com/en-us/nuget/tools/package-manager-console), run the following command to install the library:
+**Package Manager Console (PowerShell)**?ï¿½If you?ï¿½re using the [Package Manager Console (PowerShell)](https://docs.microsoft.com/en-us/nuget/tools/package-manager-console), run the following command to install the library:
 
 ```PowerShell
 Install-Package Stripe.net
 ```
 
-**VisualStudio**?”To add the Stripe.net package to Visual Studio: Open the Solution Explorer. Right-click your project. Click **Manage NuGet Packages**. Click the **Browse** tab and search for **Stripe.net**. Click the **Stripe.net** package, select the appropriate version in the tab and click **Install**.
+**VisualStudio**?ï¿½To add the Stripe.net package to Visual Studio: Open the Solution Explorer. Right-click your project. Click **Manage NuGet Packages**. Click the **Browse** tab and search for **Stripe.net**. Click the **Stripe.net** package, select the appropriate version in the tab and click **Install**.
 
 ## Run your first SDK request
 
-Now that you have the .NET SDK installed, you can create a subscription [Product](https://docs.stripe.com/api/products/create.md) and attach a [Price](https://docs.stripe.com/api/prices/create.md) with a couple API requests. We?™re using the product identifier returned in the response to create the price in this example.
+Now that you have the .NET SDK installed, you can create a subscription [Product](https://docs.stripe.com/api/products/create.md) and attach a [Price](https://docs.stripe.com/api/prices/create.md) with a couple API requests. We?ï¿½re using the product identifier returned in the response to create the price in this example.
 
 > This sample uses the default keys of your Stripe user [account](https://docs.stripe.com/get-started/account/activate.md) for your *sandbox* (A sandbox is an isolated test environment that allows you to test Stripe functionality in your account without affecting your live integration. Use sandboxes to safely experiment with new features and changes) environment. Only you can see these values.
 
@@ -2540,4 +2540,4 @@ This wraps up the quickstart. See the links below for a few different ways to pr
 - [Prebuilt checkout page](https://docs.stripe.com/checkout/quickstart.md)
 - [Custom payment flow](https://docs.stripe.com/payments/quickstart.md)
 
-
+
